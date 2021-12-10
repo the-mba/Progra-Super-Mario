@@ -2,12 +2,15 @@ from random import randint
 
 import pyxel
 
+DEBUG = 1
+
 PLAYER_STARTING_X = 40
 PLAYER_STARTING_Y = 82
 PLAYER_STARTING_VEL_Y = 0
 GRAVITY = 0.4
 
 PLAYER_TALLNESS = 16
+SCALE = 2
 WIDTH = 160
 HEIGHT = 120
 FLOOR_HEIGHT = HEIGHT - 22
@@ -17,6 +20,9 @@ class App:
         pyxel.init(WIDTH, HEIGHT, caption="Pyxel Jump")
 
         pyxel.load("assets/marioassets_133.pyxres")
+
+        self.points = 0
+        self.coins = 0
 
         self.score = 0
         self.player_x = PLAYER_STARTING_X
@@ -48,7 +54,7 @@ class App:
                 self.jumps_pending = 10
 
         if self.jumps_pending != 0:
-            self.player_vel_y -= 0.1 * self.jumps_pending
+            self.player_vel_y -= 0.11 * self.jumps_pending
             self.jumps_pending -= 1
 
         self.player_y = min(self.player_y + self.player_vel_y, FLOOR_HEIGHT - PLAYER_TALLNESS)
@@ -73,10 +79,24 @@ class App:
             12
         )
 
-        # draw score
-        s = "SCORE {:>4}".format(self.player_vel_y)
-        pyxel.text(5, 4, s, 1)
-        pyxel.text(4, 4, s, 7)
+        #draw coin of GUI
+        pyxel.blt(40, 4, 0, 48, 104, 8, 8, 7)
+
+        # draw score  {:>4}".format(self.player_vel_y)
+        name = "MARIO"
+        pyxel.text(5, 4, name, 1)
+        pyxel.text(4, 4, name, 7)
+        if DEBUG: points = 0
+        points_str = f'{points:06d}'
+        pyxel.text(5, 10, points_str, 1)
+        pyxel.text(4, 10, points_str, 7)
+        if DEBUG: coins = 0
+        coins_str = 'x' + f'{coins:02d}'
+        pyxel.text(50, 6, coins_str, 1)
+        pyxel.text(51, 6, coins_str, 7)
+        name = "WORLD"
+        pyxel.text(70, 4, name, 1)
+        pyxel.text(71, 4, name, 7)
 
 
 App()
