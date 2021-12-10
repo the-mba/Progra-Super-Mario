@@ -52,6 +52,7 @@ CAPTION = "This is the first pyxel example"
 
 # The first thing to do is to create the screen, see API for more parameters
 pyxel.init(WIDTH, HEIGHT, caption=CAPTION)
+pyxel.load("assets/marioassets_133.pyxres")
 
 # To start the game we invoke the run method with the update and draw functions
 pyxel.run(update, draw)
