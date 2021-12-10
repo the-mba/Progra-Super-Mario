@@ -7,12 +7,14 @@ DEBUG = 1
 PLAYER_STARTING_X = 40
 PLAYER_STARTING_Y = 82
 PLAYER_STARTING_VEL_Y = 0
+PLAYER_VEL_X = 2
 GRAVITY = 0.4
 
 PLAYER_TALLNESS = 16
 SCALE = 2
 WIDTH = 160
 HEIGHT = 120
+BACKGROUND_RIGHT_MOVEMENT_THRESHOLD = 70
 FLOOR_HEIGHT = HEIGHT - 22
 
 class App:
@@ -25,6 +27,7 @@ class App:
 
         self.points = 0
         self.coins = 0
+        self.background_position = 0
 
         self.score = 0
         self.player_x = PLAYER_STARTING_X
@@ -47,26 +50,35 @@ class App:
         self.update_player()
 
     def update_player(self):
+
+        # LEFT & RIGHT
         if pyxel.btnp(pyxel.KEY_RIGHT, 1, 1):
-            self.player_x = min(self.player_x + 2, pyxel.width - 16)
+            self.player_x = min(self.player_x + PLAYER_VEL_X, pyxel.width - 16)
         if pyxel.btnp(pyxel.KEY_LEFT, 1, 1):
-            self.player_x = max(self.player_x - 2, 0)
+            self.player_x = max(self.player_x - PLAYER_VEL_X, 0)
+
+        # JUMP, it is comprised of "mini-launches", each one linearly weaker than the last
         if pyxel.btnp(pyxel.KEY_UP):
             if self.height() == 0:
                 self.jumps_pending = 10
-
         if self.jumps_pending != 0:
             self.player_vel_y -= 0.11 * self.jumps_pending
             self.jumps_pending -= 1
 
+        # Y-movement and gravity
         self.player_y = min(self.player_y + self.player_vel_y, FLOOR_HEIGHT - PLAYER_TALLNESS)
         self.player_vel_y = self.player_vel_y + GRAVITY if self.height() > 0 else 0
+
+        # advance background
+        if self.player_x > WIDTH - BACKGROUND_RIGHT_MOVEMENT_THRESHOLD:
+            self.background_position += 1/4 #(self.player_x - (WIDTH - BACKGROUND_RIGHT_MOVEMENT_THRESHOLD)) * 1/8
+            self.player_x = WIDTH - BACKGROUND_RIGHT_MOVEMENT_THRESHOLD
 
     def draw(self):
         pyxel.cls(12)
 
         # draw sky
-        pyxel.bltm(0, 50, 0, 0, 88, 160, 32)
+        pyxel.bltm(0, 50, 0, self.background_position, 88, 160, 32)
         
 
         # draw player
@@ -84,7 +96,7 @@ class App:
         #draw coin of GUI
         pyxel.blt(40, 4, 0, 48, 104, 8, 8, 7)
 
-        # draw score  {:>4}".format(self.player_vel_y)
+        # draw texts
         name_str = "MARIO"
         pyxel.text(5, 4, name_str, 1)
         pyxel.text(4, 4, name_str, 7)
