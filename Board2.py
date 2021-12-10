@@ -21,6 +21,8 @@ class App:
 
         pyxel.load("assets/marioassets_133.pyxres")
 
+        self.background = pyxel.tilemap(0)
+
         self.points = 0
         self.coins = 0
 
@@ -65,7 +67,7 @@ class App:
 
         # draw sky
         pyxel.bltm(0, 50, 0, 0, 88, 160, 32)
-        pyxel.tilemap(0)
+        
 
         # draw player
         pyxel.blt(
@@ -83,9 +85,9 @@ class App:
         pyxel.blt(40, 4, 0, 48, 104, 8, 8, 7)
 
         # draw score  {:>4}".format(self.player_vel_y)
-        name = "MARIO"
-        pyxel.text(5, 4, name, 1)
-        pyxel.text(4, 4, name, 7)
+        name_str = "MARIO"
+        pyxel.text(5, 4, name_str, 1)
+        pyxel.text(4, 4, name_str, 7)
         if DEBUG: points = 0
         points_str = f'{points:06d}'
         pyxel.text(5, 10, points_str, 1)
@@ -94,9 +96,19 @@ class App:
         coins_str = 'x' + f'{coins:02d}'
         pyxel.text(50, 6, coins_str, 1)
         pyxel.text(51, 6, coins_str, 7)
-        name = "WORLD"
-        pyxel.text(70, 4, name, 1)
-        pyxel.text(71, 4, name, 7)
+        world_str = "WORLD"
+        pyxel.text(70, 4, world_str, 1)
+        pyxel.text(71, 4, world_str, 7)
+        world_name = "1 - 1"
+        pyxel.text(70, 10, world_name, 1)
+        pyxel.text(71, 10, world_name, 7)
+        time_name = "TIME"
+        pyxel.text(110, 4, time_name, 1)
+        pyxel.text(111, 4, time_name, 7)
+        if DEBUG: time = 0
+        time_name = f'{time:02d}'
+        pyxel.text(110, 10, time_name, 1)
+        pyxel.text(111, 10, time_name, 7)
 
 
 App()
