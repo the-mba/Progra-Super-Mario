@@ -11,13 +11,15 @@ PLAYER_STARTING_Y = 82
 PLAYER_STARTING_VEL_Y = 0
 PLAYER_CONSTANT_VEL_X = 2
 GRAVITY = 0.4
+JUMPING_COEFFICIENT = 0.13
 
 PLAYER_TALLNESS = 16
 SCALE = 2
 WIDTH = 256
 HEIGHT = 192
 BACKGROUND_RIGHT_MOVEMENT_THRESHOLD = WIDTH - 70
-FLOOR_HEIGHT = HEIGHT - 22
+BACKGROUND_SPEED = 1/2
+FLOOR_HEIGHT = HEIGHT - 32
 
 class Game:
     def __init__(self) -> None:
@@ -25,7 +27,7 @@ class Game:
         pyxel.init(WIDTH, HEIGHT, caption="Pyxel Jump")
         pyxel.load("../assets/marioassets_133.pyxres")
 
-        self.gui = GUI(DEBUG, WIDTH, BACKGROUND_RIGHT_MOVEMENT_THRESHOLD)
+        self.gui = GUI(DEBUG, WIDTH, BACKGROUND_RIGHT_MOVEMENT_THRESHOLD, BACKGROUND_SPEED)
         self.score = 0
         self.mario = Mario(
             PLAYER_STARTING_X,
@@ -34,7 +36,8 @@ class Game:
             PLAYER_STARTING_VEL_Y,
             FLOOR_HEIGHT,
             PLAYER_TALLNESS,
-            GRAVITY
+            GRAVITY,
+            JUMPING_COEFFICIENT
         )
 
         pyxel.run(self.update, self.draw)
@@ -48,10 +51,11 @@ class Game:
         # advance background and move back Mario
         self.mario.x = self.gui.update(self.mario.x)
 
-    def draw(self) -> None:        
+    def draw(self) -> None:    
+
+        self.gui.draw(self.mario.points, self.mario.coins, self.mario.time)    
 
         self.mario.draw()
-        self.gui.draw()
 
         
 

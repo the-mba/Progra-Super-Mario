@@ -1,7 +1,7 @@
 import pyxel
 
 class Mario:
-    def __init__(self, PLAYER_STARTING_X, PLAYER_STARTING_Y, PLAYER_CONSTANT_VEL_X, PLAYER_STARTING_VEL_Y, FLOOR_HEIGHT, PLAYER_TALLNESS, GRAVITY) -> None:
+    def __init__(self, PLAYER_STARTING_X, PLAYER_STARTING_Y, PLAYER_CONSTANT_VEL_X, PLAYER_STARTING_VEL_Y, FLOOR_HEIGHT, PLAYER_TALLNESS, GRAVITY, JUMPING_COEFFICIENT) -> None:
         self.x = PLAYER_STARTING_X
         self.y = PLAYER_STARTING_Y
         self.PLAYER_CONSTANT_VEL_X = PLAYER_CONSTANT_VEL_X
@@ -9,6 +9,7 @@ class Mario:
         self.FLOOR_HEIGHT = FLOOR_HEIGHT
         self.PLAYER_TALLNESS = PLAYER_TALLNESS
         self.GRAVITY = GRAVITY
+        self.JUMPING_COEFFICIENT = JUMPING_COEFFICIENT
         self.points = 0
         self.coins = 0
         self.time = 0
@@ -27,7 +28,7 @@ class Mario:
             if self.height() == 0:
                 self.jumps_pending = 10
         if self.jumps_pending != 0:
-            self.vel_y -= 0.11 * self.jumps_pending
+            self.vel_y -= self.JUMPING_COEFFICIENT * self.jumps_pending
             self.jumps_pending -= 1
 
         # Y-movement and gravity
