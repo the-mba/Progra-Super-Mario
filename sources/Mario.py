@@ -41,7 +41,7 @@ class Mario:
             self.x,
             self.y,
             0,
-            0 if self.vel_y > 0 else 0,
+            0,
             48,
             16,
             16,

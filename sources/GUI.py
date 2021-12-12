@@ -6,8 +6,8 @@ POS_WORLD = 0.6
 POS_TIME = 0.8
 
 class GUI:
-    def __init__(self, DEBUG, WIDTH, BACKGROUND_RIGHT_MOVEMENT_THRESHOLD, BACKGROUND_SPEED) -> None:
-        self.background = GUI.Background(WIDTH, BACKGROUND_RIGHT_MOVEMENT_THRESHOLD, BACKGROUND_SPEED)
+    def __init__(self, DEBUG, WIDTH, game_x, BACKGROUND_RIGHT_MOVEMENT_THRESHOLD, BACKGROUND_SPEED) -> None:
+        self.background = GUI.Background(WIDTH, game_x, BACKGROUND_RIGHT_MOVEMENT_THRESHOLD, BACKGROUND_SPEED)
         self.DEBUG = DEBUG
         self.WIDTH = WIDTH
     
@@ -46,12 +46,12 @@ class GUI:
         pyxel.text(self.WIDTH * POS_TIME, 10, time_name, 1)
         pyxel.text(self.WIDTH * POS_TIME + 1, 10, time_name, 7)
     
-    class Background:
-        def __init__(self, WIDTH, BACKGROUND_RIGHT_MOVEMENT_THRESHOLD, BACKGROUND_SPEED) -> None:
+    class Background: #+ 16 * 8
+        def __init__(self, WIDTH, game_x, BACKGROUND_RIGHT_MOVEMENT_THRESHOLD, BACKGROUND_SPEED) -> None:
             self.WIDTH = WIDTH
             self.BACKGROUND_RIGHT_MOVEMENT_THRESHOLD = BACKGROUND_RIGHT_MOVEMENT_THRESHOLD
             self.BACKGROUND_SPEED = BACKGROUND_SPEED
-            self.x = 0
+            self.x = game_x
         
         def update(self, mario_x) -> float:
             if mario_x > self.BACKGROUND_RIGHT_MOVEMENT_THRESHOLD:

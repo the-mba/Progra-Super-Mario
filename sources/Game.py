@@ -27,7 +27,8 @@ class Game:
         pyxel.init(WIDTH, HEIGHT, caption="Pyxel Jump")
         pyxel.load("../assets/marioassets_133.pyxres")
 
-        self.gui = GUI(DEBUG, WIDTH, BACKGROUND_RIGHT_MOVEMENT_THRESHOLD, BACKGROUND_SPEED)
+        self.x = 0
+        self.gui = GUI(DEBUG, WIDTH, self.x, BACKGROUND_RIGHT_MOVEMENT_THRESHOLD, BACKGROUND_SPEED)
         self.mario = Mario(
             PLAYER_STARTING_X,
             PLAYER_STARTING_Y,
