@@ -1,6 +1,7 @@
 from random import randint
 
 import pyxel
+from Mario import Mario
 
 DEBUG = 1
 
@@ -12,12 +13,12 @@ GRAVITY = 0.4
 
 PLAYER_TALLNESS = 16
 SCALE = 2
-WIDTH = 160
-HEIGHT = 120
+WIDTH = 256
+HEIGHT = 256
 BACKGROUND_RIGHT_MOVEMENT_THRESHOLD = 70
 FLOOR_HEIGHT = HEIGHT - 22
 
-class App:
+class Game:
     def __init__(self):
         pyxel.init(WIDTH, HEIGHT, caption="Pyxel Jump")
 
@@ -25,8 +26,8 @@ class App:
 
         self.background = pyxel.tilemap(0)
 
-        self.points = 0
-        self.coins = 0
+        self.mario = Mario(PLAYER_STARTING_X, PLAYER_STARTING_Y)
+
         self.background_position = 0
 
         self.score = 0
@@ -34,9 +35,6 @@ class App:
         self.player_y = PLAYER_STARTING_Y
         self.player_vel_y = PLAYER_STARTING_VEL_Y
         self.player_alive = True
-        self.jumps_pending = 0
-
-        pyxel.playm(0, loop=True)
 
         pyxel.run(self.update, self.draw)
 
@@ -47,27 +45,7 @@ class App:
         if pyxel.btnp(pyxel.KEY_Q):
             pyxel.quit()
         
-        self.update_player()
-
-    def update_player(self):
-
-        # LEFT & RIGHT
-        if pyxel.btnp(pyxel.KEY_RIGHT, 1, 1):
-            self.player_x = min(self.player_x + PLAYER_VEL_X, pyxel.width - 16)
-        if pyxel.btnp(pyxel.KEY_LEFT, 1, 1):
-            self.player_x = max(self.player_x - PLAYER_VEL_X, 0)
-
-        # JUMP, it is comprised of "mini-launches", each one linearly weaker than the last
-        if pyxel.btnp(pyxel.KEY_UP):
-            if self.height() == 0:
-                self.jumps_pending = 10
-        if self.jumps_pending != 0:
-            self.player_vel_y -= 0.11 * self.jumps_pending
-            self.jumps_pending -= 1
-
-        # Y-movement and gravity
-        self.player_y = min(self.player_y + self.player_vel_y, FLOOR_HEIGHT - PLAYER_TALLNESS)
-        self.player_vel_y = self.player_vel_y + GRAVITY if self.height() > 0 else 0
+        self.mario.update(self)
 
         # advance background
         if self.player_x > WIDTH - BACKGROUND_RIGHT_MOVEMENT_THRESHOLD:
@@ -100,12 +78,12 @@ class App:
         name_str = "MARIO"
         pyxel.text(5, 4, name_str, 1)
         pyxel.text(4, 4, name_str, 7)
-        if DEBUG: points = 0
-        points_str = f'{points:06d}'
+        if DEBUG: self.mario.coins = 0
+        points_str = f'{self.mario.coins:06d}'
         pyxel.text(5, 10, points_str, 1)
         pyxel.text(4, 10, points_str, 7)
-        if DEBUG: coins = 0
-        coins_str = 'x' + f'{coins:02d}'
+        if DEBUG: self.mario.coins = 0
+        coins_str = 'x' + f'{self.mario.coins:02d}'
         pyxel.text(50, 6, coins_str, 1)
         pyxel.text(51, 6, coins_str, 7)
         world_str = "WORLD"
@@ -117,10 +95,9 @@ class App:
         time_name = "TIME"
         pyxel.text(110, 4, time_name, 1)
         pyxel.text(111, 4, time_name, 7)
-        if DEBUG: time = 0
-        time_name = f'{time:02d}'
+        if DEBUG: self.mario.time = 0
+        time_name = f'{self.mario.time:02d}'
         pyxel.text(110, 10, time_name, 1)
         pyxel.text(111, 10, time_name, 7)
 
-
-App()
+Game()
