@@ -10,8 +10,8 @@ PLAYER_STARTING_X = 40
 PLAYER_STARTING_Y = 82
 PLAYER_STARTING_VEL_Y = 0
 PLAYER_CONSTANT_VEL_X = 2
-GRAVITY = 0.4
-JUMPING_COEFFICIENT = 0.13
+GRAVITY = 0.5
+JUMPING_COEFFICIENT = 0.2
 
 PLAYER_TALLNESS = 16
 SCALE = 2
@@ -28,7 +28,6 @@ class Game:
         pyxel.load("../assets/marioassets_133.pyxres")
 
         self.gui = GUI(DEBUG, WIDTH, BACKGROUND_RIGHT_MOVEMENT_THRESHOLD, BACKGROUND_SPEED)
-        self.score = 0
         self.mario = Mario(
             PLAYER_STARTING_X,
             PLAYER_STARTING_Y,
