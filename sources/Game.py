@@ -5,6 +5,7 @@ from Mario import Mario
 from Goombas import Goombas
 from Blocks import Blocks
 from GUI import GUI
+from Helper import BLOCK_TYPES as B_T
 
 DEBUG = 1
 
@@ -13,6 +14,8 @@ HEIGHT = 192
 BACKGROUND_RIGHT_MOVEMENT_THRESHOLD = WIDTH * 0.6
 BACKGROUND_SPEED = 1
 FLOOR_HEIGHT = HEIGHT - 32
+
+OFFSET = -4
 
 MARIO_TALLNESS = 16
 MARIO_WIDTH = MARIO_TALLNESS
@@ -49,10 +52,14 @@ class Game:
         )
 
         self.goombas = Goombas(WIDTH)
-        self.goombas.new(42 * 8, MARIO_STARTING_Y, 0, 0, 16, 16, 32, 48, FLOOR_HEIGHT)
+        self.goombas.new(42 * 8, MARIO_STARTING_Y + OFFSET, 0, 0, 16, 16, 32, 48, FLOOR_HEIGHT)
 
         self.blocks = Blocks()
-        self.blocks.new(39 * 8, 80,  0, 0,  16, 16,  0, 16, FLOOR_HEIGHT)
+        self.blocks.new(B_T.brick, 39 * 8, 80 + OFFSET,  0, 0,  16, 16, FLOOR_HEIGHT)
+        self.blocks.new(B_T.question, 41 * 8, 80 + OFFSET, 0, 0, 16, 16, FLOOR_HEIGHT)
+        self.blocks.new(B_T.brick, 43 * 8, 80 + OFFSET,  0, 0,  16, 16, FLOOR_HEIGHT)
+        self.blocks.new(B_T.question, 45 * 8, 80 + OFFSET, 0, 0, 16, 16, FLOOR_HEIGHT)
+        self.blocks.new(B_T.brick, 47 * 8, 80 + OFFSET,  0, 0,  16, 16, FLOOR_HEIGHT)
 
         pyxel.run(self.update, self.draw)
 

@@ -11,3 +11,7 @@ class DIR(enum.Enum):
     left = (-1, 0)
     up_left = (-r, -r)
     none = (0, 0)
+
+class BLOCK_TYPES(enum.Enum):
+    brick = (0, 16)
+    question = (16, 0)
