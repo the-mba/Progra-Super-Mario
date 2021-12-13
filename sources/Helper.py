@@ -15,3 +15,4 @@ class DIR(enum.Enum):
 class BLOCK_TYPES(enum.Enum):
     brick = (0, 16)
     question = (16, 0)
+    goomba = (32, 48)

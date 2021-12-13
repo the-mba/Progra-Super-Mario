@@ -1,5 +1,6 @@
 import Solid
 
+s= """
 class Blocks:
     def __init__(self) -> None:
         self.list = []
@@ -12,6 +13,7 @@ class Blocks:
         new_block = Block(BLOCK_TYPE, STARTING_X, STARTING_Y,  STARTING_VEL_X, STARTING_VEL_Y,  WIDTH, TALLNESS, False, FLOOR_HEIGHT)
         self.list.append(new_block)
         return new_block
+"""
 
 
 class Block(Solid.Solid):

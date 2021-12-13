@@ -2,10 +2,11 @@ from random import randint
 
 import pyxel
 from Mario import Mario
-from Goombas import Goombas
-from Blocks import Blocks
+from Goombas import Goomba
+from Blocks import Block
 from GUI import GUI
 from Helper import BLOCK_TYPES as B_T
+from My_Collection import My_Collection
 
 DEBUG = 1
 
@@ -51,15 +52,18 @@ class Game:
             JUMPING_COEFFICIENT
         )
 
-        self.goombas = Goombas(WIDTH)
-        self.goombas.new(42 * 8, MARIO_STARTING_Y + OFFSET, 0, 0, 16, 16, 32, 48, FLOOR_HEIGHT)
+        self.goombas = My_Collection(Goomba)
+        self.blocks = My_Collection(Block)
 
-        self.blocks = Blocks()
-        self.blocks.new(B_T.brick, 39 * 8, 80 + OFFSET,  0, 0,  16, 16, FLOOR_HEIGHT)
-        self.blocks.new(B_T.question, 41 * 8, 80 + OFFSET, 0, 0, 16, 16, FLOOR_HEIGHT)
-        self.blocks.new(B_T.brick, 43 * 8, 80 + OFFSET,  0, 0,  16, 16, FLOOR_HEIGHT)
-        self.blocks.new(B_T.question, 45 * 8, 80 + OFFSET, 0, 0, 16, 16, FLOOR_HEIGHT)
-        self.blocks.new(B_T.brick, 47 * 8, 80 + OFFSET,  0, 0,  16, 16, FLOOR_HEIGHT)
+        self.goombas.new(B_T.goomba, 42 * 8, MARIO_STARTING_Y + OFFSET, 0, 0, 16, 16, False, FLOOR_HEIGHT)
+
+        self.blocks.new(B_T.brick, 39 * 8, 80 + OFFSET,  0, 0,  16, 16, False, FLOOR_HEIGHT)
+        self.blocks.new(B_T.question, 41 * 8, 80 + OFFSET, 0, 0, 16, 16, False, FLOOR_HEIGHT)
+        self.blocks.new(B_T.brick, 43 * 8, 80 + OFFSET,  0, 0,  16, 16, False, FLOOR_HEIGHT)
+        self.blocks.new(B_T.question, 45 * 8, 80 + OFFSET, 0, 0, 16, 16, False, FLOOR_HEIGHT)
+        self.blocks.new(B_T.brick, 47 * 8, 80 + OFFSET,  0, 0,  16, 16, False, FLOOR_HEIGHT)
+
+        
 
         pyxel.run(self.update, self.draw)
 
