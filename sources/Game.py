@@ -14,6 +14,7 @@ GRAVITY = 0.5
 JUMPING_COEFFICIENT = 0.2
 
 PLAYER_TALLNESS = 16
+PLAYER_WIDTH = PLAYER_TALLNESS
 SCALE = 2
 WIDTH = 256
 HEIGHT = 192
@@ -34,8 +35,10 @@ class Game:
             PLAYER_STARTING_Y,
             PLAYER_CONSTANT_VEL_X,
             PLAYER_STARTING_VEL_Y,
+            BACKGROUND_RIGHT_MOVEMENT_THRESHOLD,
             FLOOR_HEIGHT,
             PLAYER_TALLNESS,
+            PLAYER_WIDTH,
             GRAVITY,
             JUMPING_COEFFICIENT
         )
@@ -45,11 +48,11 @@ class Game:
     def update(self) -> None:
         if pyxel.btnp(pyxel.KEY_Q):
             pyxel.quit()
-        
-        self.mario.update(self)
 
         # advance background and move back Mario
-        self.mario.x = self.gui.update(self.mario.x)
+        if self.mario.update(self):
+            self.gui.update()
+            self.x += BACKGROUND_SPEED
 
     def draw(self) -> None:    
 

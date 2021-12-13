@@ -11,8 +11,8 @@ class GUI:
         self.DEBUG = DEBUG
         self.WIDTH = WIDTH
     
-    def update(self, mario_x) -> float:
-        return self.background.update(mario_x)
+    def update(self, move_right) -> float:
+        return self.background.update(move_right)
         
     def draw(self, mario_points, mario_coins, mario_time) -> None:
         self.background.draw()
@@ -53,13 +53,8 @@ class GUI:
             self.BACKGROUND_SPEED = BACKGROUND_SPEED
             self.x = game_x
         
-        def update(self, mario_x) -> float:
-            if mario_x > self.BACKGROUND_RIGHT_MOVEMENT_THRESHOLD:
+        def update(self) -> None:
                 self.x += self.BACKGROUND_SPEED
-                new_mario_x = self.BACKGROUND_RIGHT_MOVEMENT_THRESHOLD
-            else:
-                new_mario_x = mario_x
-            return new_mario_x
         
         def draw(self) -> None:
             # draw light blue background
