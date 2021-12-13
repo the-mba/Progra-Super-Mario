@@ -1,7 +1,0 @@
-import pyxel
-import Solid
-
-class Goomba(Solid.Solid):
-    def __init__(self, BLOCK_TYPE, STARTING_X, STARTING_Y,  STARTING_VEL_X, STARTING_VEL_Y,  WIDTH, TALLNESS, PERSISTENT, FLOOR_HEIGHT) -> None:
-        super().__init__(STARTING_X, STARTING_Y, STARTING_VEL_X, STARTING_VEL_Y, WIDTH, TALLNESS, *BLOCK_TYPE.value, PERSISTENT, FLOOR_HEIGHT)
-        self.BLOCK_TYPE = BLOCK_TYPE

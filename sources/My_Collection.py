@@ -13,7 +13,7 @@ class My_Collection:
         for element in self.list:                
             element.draw(level_x)
 
-    def new(self, BLOCK_TYPE, STARTING_X, STARTING_Y,  STARTING_VEL_X, STARTING_VEL_Y,  WIDTH, TALLNESS, PERSISTENT, FLOOR_HEIGHT):
-        new_block = self.element_type(BLOCK_TYPE, STARTING_X, STARTING_Y,  STARTING_VEL_X, STARTING_VEL_Y,  WIDTH, TALLNESS, PERSISTENT, FLOOR_HEIGHT)
+    def new(self, BLOCK_TYPE, STARTING_X, STARTING_Y,  STARTING_VEL_X, STARTING_VEL_Y, PERSISTENT, FLOOR_HEIGHT):
+        new_block = self.element_type(BLOCK_TYPE, STARTING_X, STARTING_Y,  STARTING_VEL_X, STARTING_VEL_Y, PERSISTENT, FLOOR_HEIGHT)
         self.list.append(new_block)
         return new_block

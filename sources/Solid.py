@@ -1,8 +1,10 @@
 import pyxel
+import Solid
 from Helper import DIR as DIR
+from Helper import BLOCK_TYPES
 
 class Solid:
-    def __init__(self, STARTING_X, STARTING_Y,  STARTING_VEL_X, STARTING_VEL_Y,  WIDTH, TALLNESS,  SPRITE_X, SPRITE_Y,  PERSISTENT, FLOOR_HEIGHT) -> None:
+    def __init__(self, STARTING_X, STARTING_Y, STARTING_VEL_X, STARTING_VEL_Y, SPRITE_X, SPRITE_Y, WIDTH, TALLNESS, FLOOR_HEIGHT, PERSISTENT=False) -> None:
         self.x = STARTING_X
         self.y = STARTING_Y
 
@@ -75,3 +77,27 @@ class Solid:
         
     def corners(self) -> tuple:
         return ((self.x, self.y), (self.x + self.WIDTH, self.y), (self.x, self.y + self.MARIO_TALLNESS), (self.x + self.WIDTH, self.y + self.MARIO_TALLNESS))
+
+
+class Block(Solid):
+    def __init__(self, BLOCK_TYPE, STARTING_X, STARTING_Y, STARTING_VEL_X, STARTING_VEL_Y, FLOOR_HEIGHT, PERSISTENT=False) -> None:
+        super().__init__(STARTING_X, STARTING_Y, STARTING_VEL_X, STARTING_VEL_Y, *BLOCK_TYPE.value, FLOOR_HEIGHT, PERSISTENT)
+
+
+class Goomba(Solid):
+    def __init__(self, BLOCK_TYPE, STARTING_X, STARTING_Y, STARTING_VEL_X, STARTING_VEL_Y, FLOOR_HEIGHT, PERSISTENT=False) -> None:
+        super().__init__(STARTING_X, STARTING_Y, STARTING_VEL_X, STARTING_VEL_Y, *BLOCK_TYPE.value, FLOOR_HEIGHT, PERSISTENT)
+
+
+class Pipe():
+    def __init__(self, STARTING_X, STARTING_Y, height=2, PERSISTENT=False) -> None:
+        self.height = height
+        self.head = Pipe_Part(BLOCK_TYPES.pipe_head, STARTING_X, STARTING_Y, PERSISTENT)
+        self.body = []
+        for i in range(height - 1):
+            self.body.append(Pipe_Part(BLOCK_TYPES.pipe_body, STARTING_X, STARTING_Y, PERSISTENT))
+    
+    class Pipe_Part(Solid):
+        def __init__(self, BLOCK_TYPE, STARTING_X, STARTING_Y, FLOOR_HEIGHT, PERSISTENT=False) -> None:
+            super().__init__(BLOCK_TYPE, STARTING_X, STARTING_Y, 0, 0, *BLOCK_TYPE.value, FLOOR_HEIGHT, PERSISTENT)
+        

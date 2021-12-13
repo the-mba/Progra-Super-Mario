@@ -13,6 +13,9 @@ class DIR(enum.Enum):
     none = (0, 0)
 
 class BLOCK_TYPES(enum.Enum):
-    brick = (0, 16)
-    question = (16, 0)
-    goomba = (32, 48)
+    mario = (0, 48, 16, 16)
+    brick = (0, 16, 16, 16)
+    question = (16, 0, 16, 16)
+    goomba = (32, 48, 16, 16)
+    pipe_head = (32, 0, 32, 16)
+    pipe_body = (32, 16, 32, 16)
