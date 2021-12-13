@@ -18,10 +18,10 @@ MARIO_WIDTH = MARIO_TALLNESS
 MARIO_SPRITE_X = 0
 MARIO_SPRITE_Y = 48
 
-MARIO_STARTING_X = 40
+MARIO_STARTING_X = 160
 MARIO_STARTING_Y = FLOOR_HEIGHT - MARIO_TALLNESS
 MARIO_STARTING_VEL_Y = 0
-MARIO_CONSTANT_VEL_X = 3
+MARIO_CONSTANT_VEL_X = 2
 GRAVITY = 0.5
 JUMPING_COEFFICIENT = 1.8
 
@@ -33,7 +33,7 @@ class Game:
         pyxel.load("../assets/marioassets_133.pyxres")
 
         self.x = 0
-        self.gui = GUI(DEBUG, WIDTH, self.x, BACKGROUND_RIGHT_MOVEMENT_THRESHOLD, BACKGROUND_SPEED)
+        self.gui = GUI(DEBUG, WIDTH, BACKGROUND_RIGHT_MOVEMENT_THRESHOLD, BACKGROUND_SPEED)
         self.mario = Mario(
             MARIO_STARTING_X, MARIO_STARTING_Y,
             MARIO_CONSTANT_VEL_X, MARIO_STARTING_VEL_Y,
@@ -48,7 +48,7 @@ class Game:
         )
 
         self.goombas = Goombas(WIDTH)
-        self.goombas.new(180, MARIO_STARTING_Y, 0, 0, 16, 16, 32, 48, False, FLOOR_HEIGHT)
+        self.goombas.new(42 * 8, MARIO_STARTING_Y, 0, 0, 16, 16, 32, 48, False, FLOOR_HEIGHT)
 
         pyxel.run(self.update, self.draw)
 
@@ -57,14 +57,14 @@ class Game:
             pyxel.quit()
 
         # advance background and move back Mario
-        if self.mario.update(self):
+        if self.mario.update(self.x * 8):
             self.x += BACKGROUND_SPEED
         
         self.goombas.update(self.mario)
 
-    def draw(self) -> None:    
+    def draw(self) -> None:
 
-        self.gui.draw(self.mario.points, self.mario.coins, self.mario.time)    
+        self.gui.draw(self.x, self.mario.points, self.mario.coins, self.mario.time)    
 
         self.mario.draw(self.x * 8)
 

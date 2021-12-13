@@ -24,31 +24,16 @@ class Solid:
         pass
 
     def draw(self, level_x) -> None:
-        print(f"{self.x=} {level_x=}")
-        if self.PERSISTENT:
-            print(self.__class__)
-            pyxel.blt(
-                self.x - (0 if self.PERSISTENT else level_x),
-                self.y,
-                0, # image map that we want to use
-                self.SPRITE_X,
-                self.SPRITE_Y,
-                self.WIDTH,
-                self.TALLNESS,
-                12 # color, blue, so it becomes transparent
-            )
-        else:
-            print(self.__class__)
-            pyxel.blt(
-                self.x - (0 if self.PERSISTENT else level_x),
-                self.y,
-                0, # image map that we want to use
-                self.SPRITE_X,
-                self.SPRITE_Y,
-                self.WIDTH,
-                self.TALLNESS,
-                12 # color, blue, so it becomes transparent
-            )
+        pyxel.blt(
+            self.x - level_x,
+            self.y,
+            0, # image map that we want to use
+            self.SPRITE_X,
+            self.SPRITE_Y,
+            self.WIDTH,
+            self.TALLNESS,
+            12 # color, blue, so it becomes transparent
+        )
 
     def height(self) -> float:
         return max(0, self.FLOOR_HEIGHT - self.TALLNESS - self.y)

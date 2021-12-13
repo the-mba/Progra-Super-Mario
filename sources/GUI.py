@@ -6,16 +6,16 @@ POS_WORLD = 0.6
 POS_TIME = 0.8
 
 class GUI:
-    def __init__(self, DEBUG, WIDTH, game_x, BACKGROUND_RIGHT_MOVEMENT_THRESHOLD, BACKGROUND_SPEED) -> None:
-        self.background = GUI.Background(game_x, BACKGROUND_RIGHT_MOVEMENT_THRESHOLD, BACKGROUND_SPEED)
+    def __init__(self, DEBUG, WIDTH, BACKGROUND_RIGHT_MOVEMENT_THRESHOLD, BACKGROUND_SPEED) -> None:
+        self.background = GUI.Background(BACKGROUND_RIGHT_MOVEMENT_THRESHOLD, BACKGROUND_SPEED)
         self.DEBUG = DEBUG
         self.WIDTH = WIDTH
     
     def update(self) -> None:
         self.background.update()
         
-    def draw(self, mario_points, mario_coins, mario_time) -> None:
-        self.background.draw()
+    def draw(self, tilemap_x, mario_points, mario_coins, mario_time) -> None:
+        self.background.draw(tilemap_x)
 
         #draw coin
         pyxel.blt(self.WIDTH * POS_COINS - 8 - 2, 4, 0, 48, 104, 8, 8, 7) # -8 is the coind width, -2 is some spacing
@@ -47,19 +47,16 @@ class GUI:
         pyxel.text(self.WIDTH * POS_TIME + 1, 10, time_name, 7)
     
     class Background: #+ 16 * 8
-        def __init__(self, game_x, BACKGROUND_RIGHT_MOVEMENT_THRESHOLD, BACKGROUND_SPEED) -> None:
+        def __init__(self, BACKGROUND_RIGHT_MOVEMENT_THRESHOLD, BACKGROUND_SPEED) -> None:
             self.BACKGROUND_RIGHT_MOVEMENT_THRESHOLD = BACKGROUND_RIGHT_MOVEMENT_THRESHOLD
             self.BACKGROUND_SPEED = BACKGROUND_SPEED
-            self.x = game_x
         
         def update(self) -> None:
             pass
 
-        def draw(self) -> None:
+        def draw(self, tilemap_x) -> None:
             # draw light blue background
             pyxel.cls(12)
 
-            print(f"{self.x=}")
-
             # draw tilemap
-            pyxel.bltm(0, 0, 0, self.x, 74, 128, 128)
+            pyxel.bltm(0, 0, 0, tilemap_x, 74, 128, 128)
