@@ -77,24 +77,23 @@ class Solid:
 
 
 class Block(Solid):
-    s = """
-    def __init__(self, BLOCK_TYPE, STARTING_X, STARTING_Y, STARTING_VEL_X, STARTING_VEL_Y, FLOOR_HEIGHT, HEIGHT, PERSISTENT=False) -> None:
-        super().__init__(BLOCK_TYPE, STARTING_X, STARTING_Y, STARTING_VEL_X, STARTING_VEL_Y, FLOOR_HEIGHT, HEIGHT, PERSISTENT=False)"""
+    pass
 
 
 class Goomba(Solid):
-    def __init__(self, BLOCK_TYPE, STARTING_X, STARTING_Y, STARTING_VEL_X, STARTING_VEL_Y, HEIGHT, FLOOR_HEIGHT, PERSISTENT=False) -> None:
-        super().__init__(BLOCK_TYPE, STARTING_X, STARTING_Y, STARTING_VEL_X, STARTING_VEL_Y, FLOOR_HEIGHT, HEIGHT, PERSISTENT=False)
+    pass
 
 
 class Pipe():
     def __init__(self, BLOCK_TYPE, STARTING_X, STARTING_Y, STARTING_VEL_X, STARTING_VEL_Y, FLOOR_HEIGHT, HEIGHT=2, PERSISTENT=False) -> None:
         self.parts = My_Collection(Pipe.Part)
         self.HEIGHT = HEIGHT
-        self.parts.new(BLOCK_TYPES.pipe_head, STARTING_X, STARTING_Y, STARTING_VEL_X, STARTING_VEL_Y, FLOOR_HEIGHT, HEIGHT, PERSISTENT)
-        for i in range(1, HEIGHT):
-            self.parts.new(BLOCK_TYPES.pipe_body, STARTING_X, STARTING_Y + 16 * i, STARTING_VEL_X, STARTING_VEL_Y, FLOOR_HEIGHT, HEIGHT, PERSISTENT)
-    
+        self.parts.new(BLOCK_TYPES.pipe_head, STARTING_X, STARTING_Y, STARTING_VEL_X, STARTING_VEL_Y, FLOOR_HEIGHT)
+        for i in range(1, int(HEIGHT)):
+            self.parts.new(BLOCK_TYPES.pipe_body, STARTING_X, STARTING_Y + 16 * i, STARTING_VEL_X, STARTING_VEL_Y, FLOOR_HEIGHT)
+        if self.HEIGHT - int(HEIGHT):
+            self.parts.new(BLOCK_TYPES.half_pipe_body, STARTING_X, STARTING_Y + 16 * int(HEIGHT), STARTING_VEL_X, STARTING_VEL_Y, FLOOR_HEIGHT)
+
     def update(self, mario) -> None:
         self.parts.update(mario)
     
@@ -102,6 +101,5 @@ class Pipe():
         self.parts.draw(level_x)
     
     class Part(Solid):
-        def __init__(self, BLOCK_TYPE, STARTING_X, STARTING_Y, STARTING_VEL_X, STARTING_VEL_Y, FLOOR_HEIGHT, HEIGHT, PERSISTENT=False) -> None:
-            super().__init__(BLOCK_TYPE, STARTING_X, STARTING_Y, STARTING_VEL_X, STARTING_VEL_Y, FLOOR_HEIGHT)
+        pass
         

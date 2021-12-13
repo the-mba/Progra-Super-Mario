@@ -59,4 +59,6 @@ class GUI:
             pyxel.cls(12)
 
             # draw tilemap
-            pyxel.bltm(0, 0, 0, tilemap_x, 74, 128, 128)
+            pyxel.bltm(0, 0, 0, tilemap_x % 256, 74, 128, 128)
+
+            pyxel.bltm(0, 0, 0, tilemap_x % 256 - 256, 74, 128, 128)

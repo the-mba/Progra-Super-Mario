@@ -14,9 +14,9 @@ class My_Collection:
             element.draw(level_x)
 
     def new(self, BLOCK_TYPE, STARTING_X, STARTING_Y,  STARTING_VEL_X, STARTING_VEL_Y, FLOOR_HEIGHT, HEIGHT=1, PERSISTENT=False):
-        new_block = self.element_type(BLOCK_TYPE, STARTING_X, STARTING_Y,  STARTING_VEL_X, STARTING_VEL_Y, FLOOR_HEIGHT, HEIGHT, PERSISTENT)
-        self.list.append(new_block)
-        return new_block
+        new_element = self.element_type(BLOCK_TYPE, STARTING_X, STARTING_Y,  STARTING_VEL_X, STARTING_VEL_Y, FLOOR_HEIGHT, HEIGHT, PERSISTENT)
+        self.list.append(new_element)
+        return new_element
 
 
 class My_Meta_Collection(My_Collection):

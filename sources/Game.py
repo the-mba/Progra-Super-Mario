@@ -16,7 +16,7 @@ BACKGROUND_RIGHT_MOVEMENT_THRESHOLD = GAME_WIDTH * 0.6
 BACKGROUND_SPEED = 1
 FLOOR_HEIGHT = GAME_HEIGHT - 32
 
-OFFSET = -12
+OFFSET = -12 if DEBUG else 0
 
 MARIO_TALLNESS = 16
 MARIO_WIDTH = MARIO_TALLNESS
@@ -67,9 +67,16 @@ class Game:
         self.goombas.new(B_T.goomba, 76 * 8, MARIO_STARTING_Y + OFFSET, 0, 0, FLOOR_HEIGHT)
 
         self.pipes.new(B_T.pipe, 96*8 + OFFSET, 80 - 8, 0, 0, FLOOR_HEIGHT, 5.5)
-        
-        for i in self.pipes.list[0].parts.list:
-            pass
+
+        self.goombas.new(B_T.goomba, 106 * 8, MARIO_STARTING_Y + OFFSET, 0, 0, FLOOR_HEIGHT)
+        self.goombas.new(B_T.goomba, 110 * 8, MARIO_STARTING_Y + OFFSET, 0, 0, FLOOR_HEIGHT)
+
+        self.pipes.new(B_T.pipe, 120*8 + OFFSET, 80 - 8, 0, 0, FLOOR_HEIGHT, 5.5)
+
+        self.blocks.new(B_T.brick, 146 * 8, 80 + 1*16 + OFFSET,  0, 0, FLOOR_HEIGHT)
+        self.blocks.new(B_T.question, 148 * 8, 80 + 1*16 + OFFSET, 0, 0, FLOOR_HEIGHT)
+        self.blocks.new(B_T.brick, 150 * 8, 80 + 1*16 + OFFSET,  0, 0, FLOOR_HEIGHT)
+
 
         pyxel.run(self.update, self.draw)
 

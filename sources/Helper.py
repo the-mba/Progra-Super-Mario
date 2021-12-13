@@ -20,3 +20,4 @@ class BLOCK_TYPES(enum.Enum):
     goomba = (32, 48, 16, 16)
     pipe_head = (32, 0, 32, 16)
     pipe_body = (32, 16, 32, 16)
+    half_pipe_body = (32, 16, 32, 8)
