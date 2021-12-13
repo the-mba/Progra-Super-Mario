@@ -7,12 +7,12 @@ POS_TIME = 0.8
 
 class GUI:
     def __init__(self, DEBUG, WIDTH, game_x, BACKGROUND_RIGHT_MOVEMENT_THRESHOLD, BACKGROUND_SPEED) -> None:
-        self.background = GUI.Background(WIDTH, game_x, BACKGROUND_RIGHT_MOVEMENT_THRESHOLD, BACKGROUND_SPEED)
+        self.background = GUI.Background(game_x, BACKGROUND_RIGHT_MOVEMENT_THRESHOLD, BACKGROUND_SPEED)
         self.DEBUG = DEBUG
         self.WIDTH = WIDTH
     
-    def update(self) -> float:
-        return self.background.update()
+    def update(self, level_x) -> None:
+        self.background.update(level_x)
         
     def draw(self, mario_points, mario_coins, mario_time) -> None:
         self.background.draw()
@@ -47,18 +47,19 @@ class GUI:
         pyxel.text(self.WIDTH * POS_TIME + 1, 10, time_name, 7)
     
     class Background: #+ 16 * 8
-        def __init__(self, WIDTH, game_x, BACKGROUND_RIGHT_MOVEMENT_THRESHOLD, BACKGROUND_SPEED) -> None:
-            self.WIDTH = WIDTH
+        def __init__(self, game_x, BACKGROUND_RIGHT_MOVEMENT_THRESHOLD, BACKGROUND_SPEED) -> None:
             self.BACKGROUND_RIGHT_MOVEMENT_THRESHOLD = BACKGROUND_RIGHT_MOVEMENT_THRESHOLD
             self.BACKGROUND_SPEED = BACKGROUND_SPEED
             self.x = game_x
         
-        def update(self) -> None:
-                self.x += self.BACKGROUND_SPEED
+        def update(self, game_x) -> None:
+                self.x = game_x
         
         def draw(self) -> None:
             # draw light blue background
             pyxel.cls(12)
+
+            print("self.x is ", self.x)
 
             # draw tilemap
             pyxel.bltm(0, 0, 0, self.x, 74, 128, 128)

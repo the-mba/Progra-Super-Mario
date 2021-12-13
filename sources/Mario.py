@@ -19,18 +19,19 @@ class Mario(Solid.Solid):
 
     def update(self, game) -> bool: # returns True if the Mario moves and the Background has to move
         move_right = False
+        level_x = game.gui.background.x
 
         # RIGHT
         if pyxel.btnp(pyxel.KEY_RIGHT, 1, 1):
             self.vel_x = self.MARIO_CONSTANT_VEL_X
-            self.x = min(self.x + self.vel_x, self.BACKGROUND_RIGHT_MOVEMENT_THRESHOLD)
+            self.x = min(self.x + self.vel_x, level_x + self.BACKGROUND_RIGHT_MOVEMENT_THRESHOLD)
             move_right = True
         else:
             self.vel_x = 0
         # LEFT
         if pyxel.btnp(pyxel.KEY_LEFT, 1, 1):
             self.vel_x = -self.MARIO_CONSTANT_VEL_X
-            self.x = max(self.x + self.vel_x, 0)
+            self.x = max(self.x + self.vel_x, level_x)
         else:
             self.vel_x = 0
 
@@ -48,6 +49,6 @@ class Mario(Solid.Solid):
 
         self.vel = self.dir()
 
-        return move_right and self.x is self.BACKGROUND_RIGHT_MOVEMENT_THRESHOLD
+        return move_right and self.x == level_x + self.BACKGROUND_RIGHT_MOVEMENT_THRESHOLD
     
     
