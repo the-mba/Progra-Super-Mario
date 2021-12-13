@@ -16,7 +16,7 @@ BACKGROUND_RIGHT_MOVEMENT_THRESHOLD = GAME_WIDTH * 0.6
 BACKGROUND_SPEED = 1
 FLOOR_HEIGHT = GAME_HEIGHT - 32
 
-OFFSET = -4
+OFFSET = -12
 
 MARIO_TALLNESS = 16
 MARIO_WIDTH = MARIO_TALLNESS
@@ -59,12 +59,17 @@ class Game:
         self.blocks.new(B_T.question, 41 * 8, 80 + OFFSET, 0, 0, FLOOR_HEIGHT)
         self.blocks.new(B_T.brick, 43 * 8, 80 + OFFSET,  0, 0, FLOOR_HEIGHT)
         self.blocks.new(B_T.question, 45 * 8, 80 + OFFSET, 0, 0, FLOOR_HEIGHT)
-        self.blocks.new(B_T.brick, 47 * 8, 80 + OFFSET,  0, 0, FLOOR_HEIGHT)
+        self.blocks.new(B_T.brick, 47 * 8, 80 + OFFSET,  0, 0, FLOOR_HEIGHT) # EL TILEMAP 84 SE QUEDA EN EL PIXEL 80 !!!
 
-        self.pipes.new(B_T.pipe, 80, 80, 0, 0, 20, FLOOR_HEIGHT, True)
-        print("length of pipe is supposed to be: ", len(self.pipes.list))
+        self.pipes.new(B_T.pipe, 56*8 + OFFSET, 80 + 3 * 16, 0, 0, FLOOR_HEIGHT, 2)
+        self.pipes.new(B_T.pipe, 72*8 + OFFSET, 80 + 1 * 16, 0, 0, FLOOR_HEIGHT, 4)
+
+        self.goombas.new(B_T.goomba, 76 * 8, MARIO_STARTING_Y + OFFSET, 0, 0, FLOOR_HEIGHT)
+
+        self.pipes.new(B_T.pipe, 96*8 + OFFSET, 80 - 8, 0, 0, FLOOR_HEIGHT, 5.5)
+        
         for i in self.pipes.list[0].parts.list:
-            print(i)
+            pass
 
         pyxel.run(self.update, self.draw)
 
@@ -80,7 +85,7 @@ class Game:
 
     def draw(self) -> None:
 
-        self.gui.draw(self.x, self.mario.points, self.mario.coins, self.mario.time)    
+        self.gui.draw(self.x, self.mario.points, self.mario.coins, self.mario.time)
 
         self.mario.draw(self.x * 8)
 
