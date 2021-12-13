@@ -2,20 +2,17 @@ import pyxel
 import Solid
 from Helper import DIR as DIR
 from Helper import BLOCK_TYPES
+from My_Collection import My_Collection
 
 class Solid:
-    def __init__(self, STARTING_X, STARTING_Y, STARTING_VEL_X, STARTING_VEL_Y, SPRITE_X, SPRITE_Y, WIDTH, TALLNESS, FLOOR_HEIGHT, PERSISTENT=False) -> None:
+    def __init__(self, BLOCK_TYPE, STARTING_X, STARTING_Y, STARTING_VEL_X, STARTING_VEL_Y, FLOOR_HEIGHT, HEIGHT=1, PERSISTENT=False) -> None:
         self.x = STARTING_X
         self.y = STARTING_Y
 
         self.vel_x = STARTING_VEL_X
         self.vel_y = STARTING_VEL_Y
 
-        self.WIDTH = WIDTH
-        self.TALLNESS = TALLNESS
-
-        self.SPRITE_X = SPRITE_X
-        self.SPRITE_Y = SPRITE_Y
+        self.SPRITE_X, self.SPRITE_Y, self.WIDTH, self.TALLNESS = BLOCK_TYPE.value
 
         self.PERSISTENT = PERSISTENT
         self.FLOOR_HEIGHT = FLOOR_HEIGHT
@@ -80,24 +77,31 @@ class Solid:
 
 
 class Block(Solid):
-    def __init__(self, BLOCK_TYPE, STARTING_X, STARTING_Y, STARTING_VEL_X, STARTING_VEL_Y, HEIGHT, FLOOR_HEIGHT, PERSISTENT=False) -> None:
-        super().__init__(STARTING_X, STARTING_Y, STARTING_VEL_X, STARTING_VEL_Y, *BLOCK_TYPE.value, FLOOR_HEIGHT, PERSISTENT)
+    s = """
+    def __init__(self, BLOCK_TYPE, STARTING_X, STARTING_Y, STARTING_VEL_X, STARTING_VEL_Y, FLOOR_HEIGHT, HEIGHT, PERSISTENT=False) -> None:
+        super().__init__(BLOCK_TYPE, STARTING_X, STARTING_Y, STARTING_VEL_X, STARTING_VEL_Y, FLOOR_HEIGHT, HEIGHT, PERSISTENT=False)"""
 
 
 class Goomba(Solid):
     def __init__(self, BLOCK_TYPE, STARTING_X, STARTING_Y, STARTING_VEL_X, STARTING_VEL_Y, HEIGHT, FLOOR_HEIGHT, PERSISTENT=False) -> None:
-        super().__init__(STARTING_X, STARTING_Y, STARTING_VEL_X, STARTING_VEL_Y, *BLOCK_TYPE.value, FLOOR_HEIGHT, PERSISTENT)
+        super().__init__(BLOCK_TYPE, STARTING_X, STARTING_Y, STARTING_VEL_X, STARTING_VEL_Y, FLOOR_HEIGHT, HEIGHT, PERSISTENT=False)
 
 
 class Pipe():
-    def __init__(self, BLOCK_TYPE, STARTING_X, STARTING_Y, STARTING_VEL_X, STARTING_VEL_Y, HEIGHT=2, PERSISTENT=False) -> None:
-        self.height = height
-        self.head = Pipe.Part(BLOCK_TYPES.pipe_head, STARTING_X, STARTING_Y, FLOOR_HEIGHT, PERSISTENT)
-        self.body = []
-        for i in range(1, height):
-            self.body.append(Pipe.Part(BLOCK_TYPES.pipe_body, STARTING_X, STARTING_Y + 16 * i, PERSISTENT))
+    def __init__(self, BLOCK_TYPE, STARTING_X, STARTING_Y, STARTING_VEL_X, STARTING_VEL_Y, FLOOR_HEIGHT, HEIGHT=2, PERSISTENT=False) -> None:
+        self.parts = My_Collection(Pipe.Part)
+        self.HEIGHT = HEIGHT
+        self.parts.new(BLOCK_TYPES.pipe_head, STARTING_X, STARTING_Y, STARTING_VEL_X, STARTING_VEL_Y, FLOOR_HEIGHT, HEIGHT, PERSISTENT)
+        for i in range(1, HEIGHT):
+            self.parts.new(BLOCK_TYPES.pipe_body, STARTING_X, STARTING_Y + 16 * i, STARTING_VEL_X, STARTING_VEL_Y, FLOOR_HEIGHT, HEIGHT, PERSISTENT)
+    
+    def update(self, mario) -> None:
+        self.parts.update(mario)
+    
+    def draw(self, level_x) -> None:
+        self.parts.draw(level_x)
     
     class Part(Solid):
-        def __init__(self, BLOCK_TYPE, STARTING_X, STARTING_Y, FLOOR_HEIGHT, PERSISTENT=False) -> None:
-            super().__init__(STARTING_X, STARTING_Y, 0, 0, *BLOCK_TYPE.value, FLOOR_HEIGHT, PERSISTENT)
+        def __init__(self, BLOCK_TYPE, STARTING_X, STARTING_Y, STARTING_VEL_X, STARTING_VEL_Y, FLOOR_HEIGHT, HEIGHT, PERSISTENT=False) -> None:
+            super().__init__(BLOCK_TYPE, STARTING_X, STARTING_Y, STARTING_VEL_X, STARTING_VEL_Y, FLOOR_HEIGHT)
         

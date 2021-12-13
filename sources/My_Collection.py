@@ -13,7 +13,17 @@ class My_Collection:
         for element in self.list:                
             element.draw(level_x)
 
-    def new(self, BLOCK_TYPE, STARTING_X, STARTING_Y,  STARTING_VEL_X, STARTING_VEL_Y, HEIGHT, FLOOR_HEIGHT, PERSISTENT):
-        new_block = self.element_type(BLOCK_TYPE, STARTING_X, STARTING_Y,  STARTING_VEL_X, STARTING_VEL_Y, HEIGHT, FLOOR_HEIGHT, PERSISTENT)
+    def new(self, BLOCK_TYPE, STARTING_X, STARTING_Y,  STARTING_VEL_X, STARTING_VEL_Y, FLOOR_HEIGHT, HEIGHT=1, PERSISTENT=False):
+        new_block = self.element_type(BLOCK_TYPE, STARTING_X, STARTING_Y,  STARTING_VEL_X, STARTING_VEL_Y, FLOOR_HEIGHT, HEIGHT, PERSISTENT)
         self.list.append(new_block)
         return new_block
+
+
+class My_Meta_Collection(My_Collection):
+    def __init__(self, *types) -> None:
+        self.list = []
+        for t in types:
+            self.list.append(My_Collection(t))
+
+    def new(self, BLOCK_TYPE, STARTING_X, STARTING_Y,  STARTING_VEL_X, STARTING_VEL_Y, FLOOR_HEIGHT, HEIGHT=1, PERSISTENT=False):
+        pass

@@ -6,14 +6,15 @@ from Solid import Block, Goomba, Pipe
 from GUI import GUI
 from Helper import BLOCK_TYPES as B_T
 from My_Collection import My_Collection
+from My_Collection import My_Meta_Collection
 
 DEBUG = 1
 
-WIDTH = 256
-HEIGHT = 192
-BACKGROUND_RIGHT_MOVEMENT_THRESHOLD = WIDTH * 0.6
+GAME_WIDTH = 256
+GAME_HEIGHT = 192
+BACKGROUND_RIGHT_MOVEMENT_THRESHOLD = GAME_WIDTH * 0.6
 BACKGROUND_SPEED = 1
-FLOOR_HEIGHT = HEIGHT - 32
+FLOOR_HEIGHT = GAME_HEIGHT - 32
 
 OFFSET = -4
 
@@ -33,15 +34,14 @@ JUMPING_COEFFICIENT = 1.8
 class Game:
     def __init__(self) -> None:
 
-        pyxel.init(WIDTH, HEIGHT, caption="Pyxel Jump")
+        pyxel.init(GAME_WIDTH, GAME_HEIGHT, caption="Pyxel Jump")
         pyxel.load("../assets/marioassets_133.pyxres")
 
         self.x = 0
-        self.gui = GUI(DEBUG, WIDTH, BACKGROUND_RIGHT_MOVEMENT_THRESHOLD, BACKGROUND_SPEED)
+        self.gui = GUI(DEBUG, GAME_WIDTH, BACKGROUND_RIGHT_MOVEMENT_THRESHOLD, BACKGROUND_SPEED)
         self.mario = Mario(
             MARIO_STARTING_X, MARIO_STARTING_Y,
             MARIO_CONSTANT_VEL_X, MARIO_STARTING_VEL_Y,
-
             FLOOR_HEIGHT,
             BACKGROUND_RIGHT_MOVEMENT_THRESHOLD,
             GRAVITY,
@@ -49,19 +49,22 @@ class Game:
             PERSISTENT=True
         )
 
-        self.goombas = My_Collection(Goomba)
-        self.blocks = My_Collection(Block)
-        self.pipes = My_Collection(Pipes)
+        self.solids = My_Meta_Collection(Goomba, Block, Pipe)
 
-        self.goombas.new(B_T.goomba, 42 * 8, MARIO_STARTING_Y + OFFSET, 0, 0, False, FLOOR_HEIGHT)
+        self.goombas, self.blocks, self.pipes = self.solids.list
+        
+        self.goombas.new(B_T.goomba, 42 * 8, MARIO_STARTING_Y + OFFSET, 0, 0, FLOOR_HEIGHT)
 
-        self.blocks.new(B_T.brick, 39 * 8, 80 + OFFSET,  0, 0, False, FLOOR_HEIGHT)
-        self.blocks.new(B_T.question, 41 * 8, 80 + OFFSET, 0, 0, False, FLOOR_HEIGHT)
-        self.blocks.new(B_T.brick, 43 * 8, 80 + OFFSET,  0, 0, False, FLOOR_HEIGHT)
-        self.blocks.new(B_T.question, 45 * 8, 80 + OFFSET, 0, 0, False, FLOOR_HEIGHT)
-        self.blocks.new(B_T.brick, 47 * 8, 80 + OFFSET,  0, 0, False, FLOOR_HEIGHT)
+        self.blocks.new(B_T.brick, 39 * 8, 80 + OFFSET,  0, 0, FLOOR_HEIGHT)
+        self.blocks.new(B_T.question, 41 * 8, 80 + OFFSET, 0, 0, FLOOR_HEIGHT)
+        self.blocks.new(B_T.brick, 43 * 8, 80 + OFFSET,  0, 0, FLOOR_HEIGHT)
+        self.blocks.new(B_T.question, 45 * 8, 80 + OFFSET, 0, 0, FLOOR_HEIGHT)
+        self.blocks.new(B_T.brick, 47 * 8, 80 + OFFSET,  0, 0, FLOOR_HEIGHT)
 
-        self.pipes.new(B_T.pipe, 80, 80, 0, 0, 3, FLOOR_HEIGHT, True)
+        self.pipes.new(B_T.pipe, 80, 80, 0, 0, 20, FLOOR_HEIGHT, True)
+        print("length of pipe is supposed to be: ", len(self.pipes.list))
+        for i in self.pipes.list[0].parts.list:
+            print(i)
 
         pyxel.run(self.update, self.draw)
 
@@ -81,9 +84,7 @@ class Game:
 
         self.mario.draw(self.x * 8)
 
-        self.goombas.draw(self.x * 8)
-
-        self.blocks.draw(self.x * 8)
+        self.solids.draw(self.x * 8)
 
         
 
