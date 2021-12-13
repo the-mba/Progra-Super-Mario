@@ -1,14 +1,20 @@
 import pyxel
 from Helper import DIR as DIR
 
-class Block:
-    def __init__(self, starting_x, starting_y, width, tallness, starting_vel_x, starting_vel_y, FLOOR_HEIGHT) -> None:
-        self.x = starting_x
-        self.y = starting_y
-        self.width = width
-        self.tallness = height
-        self.vel_x = starting_vel_x
-        self.vel_y = starting_vel_y
+class Solid:
+    def __init__(self, STARTING_X, STARTING_Y,  STARTING_VEL_X, STARTING_VEL_Y,  WIDTH, TALLNESS,  SPRITE_X, SPRITE_Y,  FLOOR_HEIGHT) -> None:
+        self.x = STARTING_X
+        self.y = STARTING_Y
+
+        self.vel_x = STARTING_VEL_X
+        self.vel_y = STARTING_VEL_Y
+
+        self.WIDTH = WIDTH
+        self.TALLNESS = TALLNESS
+
+        self.SPRITE_X = SPRITE_X
+        self.SPRITE_Y = SPRITE_Y
+
         self.FLOOR_HEIGHT = FLOOR_HEIGHT
         self.vel = DIR.none
         self.alive = True
@@ -16,8 +22,17 @@ class Block:
     def update(self, mario) -> None:
         pass
 
-    def draw(self) -> None:
-        pass
+    def draw(self):
+        pyxel.blt(
+            self.x,
+            self.y,
+            0, # image map that we want to use
+            self.SPRITE_X,
+            self.SPRITE_Y,
+            self.WIDTH,
+            self.TALLNESS,
+            12 # color, blue, so it becomes transparent
+        )
 
     def height(self) -> float:
         return self.FLOOR_HEIGHT - self.tallness - self.y
@@ -58,4 +73,4 @@ class Block:
         return side         
         
     def corners(self) -> tuple:
-        return ((self.x, self.y), (self.x + self.WIDTH, self.y), (self.x, self.y + self.PLAYER_TALLNESS), (self.x + self.WIDTH, self.y + self.PLAYER_TALLNESS))
+        return ((self.x, self.y), (self.x + self.WIDTH, self.y), (self.x, self.y + self.MARIO_TALLNESS), (self.x + self.WIDTH, self.y + self.MARIO_TALLNESS))
