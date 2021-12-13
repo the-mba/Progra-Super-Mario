@@ -13,6 +13,7 @@ class DIR(enum.Enum):
     none = (0, 0)
 
 class BLOCK_TYPES(enum.Enum):
+    pipe = (32, 0, 32, 32)  # just a placeholder, these values shouldn't be directly used. Instead, it should create a pipe_head and several pipe_body
     mario = (0, 48, 16, 16)
     brick = (0, 16, 16, 16)
     question = (16, 0, 16, 16)

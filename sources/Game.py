@@ -51,6 +51,7 @@ class Game:
 
         self.goombas = My_Collection(Goomba)
         self.blocks = My_Collection(Block)
+        self.pipes = My_Collection(Pipes)
 
         self.goombas.new(B_T.goomba, 42 * 8, MARIO_STARTING_Y + OFFSET, 0, 0, False, FLOOR_HEIGHT)
 
@@ -60,7 +61,7 @@ class Game:
         self.blocks.new(B_T.question, 45 * 8, 80 + OFFSET, 0, 0, False, FLOOR_HEIGHT)
         self.blocks.new(B_T.brick, 47 * 8, 80 + OFFSET,  0, 0, False, FLOOR_HEIGHT)
 
-
+        self.pipes.new(B_T.pipe, 80, 80, 0, 0, 3, FLOOR_HEIGHT, True)
 
         pyxel.run(self.update, self.draw)
 

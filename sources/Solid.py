@@ -80,24 +80,24 @@ class Solid:
 
 
 class Block(Solid):
-    def __init__(self, BLOCK_TYPE, STARTING_X, STARTING_Y, STARTING_VEL_X, STARTING_VEL_Y, FLOOR_HEIGHT, PERSISTENT=False) -> None:
+    def __init__(self, BLOCK_TYPE, STARTING_X, STARTING_Y, STARTING_VEL_X, STARTING_VEL_Y, HEIGHT, FLOOR_HEIGHT, PERSISTENT=False) -> None:
         super().__init__(STARTING_X, STARTING_Y, STARTING_VEL_X, STARTING_VEL_Y, *BLOCK_TYPE.value, FLOOR_HEIGHT, PERSISTENT)
 
 
 class Goomba(Solid):
-    def __init__(self, BLOCK_TYPE, STARTING_X, STARTING_Y, STARTING_VEL_X, STARTING_VEL_Y, FLOOR_HEIGHT, PERSISTENT=False) -> None:
+    def __init__(self, BLOCK_TYPE, STARTING_X, STARTING_Y, STARTING_VEL_X, STARTING_VEL_Y, HEIGHT, FLOOR_HEIGHT, PERSISTENT=False) -> None:
         super().__init__(STARTING_X, STARTING_Y, STARTING_VEL_X, STARTING_VEL_Y, *BLOCK_TYPE.value, FLOOR_HEIGHT, PERSISTENT)
 
 
 class Pipe():
-    def __init__(self, STARTING_X, STARTING_Y, height=2, PERSISTENT=False) -> None:
+    def __init__(self, BLOCK_TYPE, STARTING_X, STARTING_Y, STARTING_VEL_X, STARTING_VEL_Y, HEIGHT=2, PERSISTENT=False) -> None:
         self.height = height
-        self.head = Pipe_Part(BLOCK_TYPES.pipe_head, STARTING_X, STARTING_Y, PERSISTENT)
+        self.head = Pipe.Part(BLOCK_TYPES.pipe_head, STARTING_X, STARTING_Y, FLOOR_HEIGHT, PERSISTENT)
         self.body = []
-        for i in range(height - 1):
-            self.body.append(Pipe_Part(BLOCK_TYPES.pipe_body, STARTING_X, STARTING_Y, PERSISTENT))
+        for i in range(1, height):
+            self.body.append(Pipe.Part(BLOCK_TYPES.pipe_body, STARTING_X, STARTING_Y + 16 * i, PERSISTENT))
     
-    class Pipe_Part(Solid):
+    class Part(Solid):
         def __init__(self, BLOCK_TYPE, STARTING_X, STARTING_Y, FLOOR_HEIGHT, PERSISTENT=False) -> None:
-            super().__init__(BLOCK_TYPE, STARTING_X, STARTING_Y, 0, 0, *BLOCK_TYPE.value, FLOOR_HEIGHT, PERSISTENT)
+            super().__init__(STARTING_X, STARTING_Y, 0, 0, *BLOCK_TYPE.value, FLOOR_HEIGHT, PERSISTENT)
         
