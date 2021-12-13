@@ -3,6 +3,7 @@ from random import randint
 import pyxel
 from Mario import Mario
 from Goombas import Goombas
+from Blocks import Blocks
 from GUI import GUI
 
 DEBUG = 1
@@ -48,7 +49,10 @@ class Game:
         )
 
         self.goombas = Goombas(WIDTH)
-        self.goombas.new(42 * 8, MARIO_STARTING_Y, 0, 0, 16, 16, 32, 48, False, FLOOR_HEIGHT)
+        self.goombas.new(42 * 8, MARIO_STARTING_Y, 0, 0, 16, 16, 32, 48, FLOOR_HEIGHT)
+
+        self.blocks = Blocks()
+        self.blocks.new(39 * 8, 80,  0, 0,  16, 16,  0, 16, FLOOR_HEIGHT)
 
         pyxel.run(self.update, self.draw)
 
@@ -69,6 +73,8 @@ class Game:
         self.mario.draw(self.x * 8)
 
         self.goombas.draw(self.x * 8)
+
+        self.blocks.draw(self.x * 8)
 
         
 

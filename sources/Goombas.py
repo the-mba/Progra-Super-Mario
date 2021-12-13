@@ -15,7 +15,7 @@ class Goombas:
         for goomba in self.list:                
             goomba.draw(level_x)
 
-    def new(self, STARTING_X, STARTING_Y,  STARTING_VEL_X, STARTING_VEL_Y,  WIDTH, TALLNESS,  SPRITE_X, SPRITE_Y, PERSISTENT, FLOOR_HEIGHT):
+    def new(self, STARTING_X, STARTING_Y,  STARTING_VEL_X, STARTING_VEL_Y,  WIDTH, TALLNESS,  SPRITE_X, SPRITE_Y, FLOOR_HEIGHT):
         new_goomba = Goomba(STARTING_X, STARTING_Y,  STARTING_VEL_X, STARTING_VEL_Y,  WIDTH, TALLNESS,  SPRITE_X, SPRITE_Y, False, FLOOR_HEIGHT)
         self.list.append(new_goomba)
         return new_goomba
