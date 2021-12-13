@@ -2,7 +2,7 @@ import pyxel
 from Helper import DIR as DIR
 
 class Solid:
-    def __init__(self, STARTING_X, STARTING_Y,  STARTING_VEL_X, STARTING_VEL_Y,  WIDTH, TALLNESS,  SPRITE_X, SPRITE_Y,  FLOOR_HEIGHT) -> None:
+    def __init__(self, STARTING_X, STARTING_Y,  STARTING_VEL_X, STARTING_VEL_Y,  WIDTH, TALLNESS,  SPRITE_X, SPRITE_Y,  PERSISTENT, FLOOR_HEIGHT) -> None:
         self.x = STARTING_X
         self.y = STARTING_Y
 
@@ -15,6 +15,7 @@ class Solid:
         self.SPRITE_X = SPRITE_X
         self.SPRITE_Y = SPRITE_Y
 
+        self.PERSISTENT = PERSISTENT
         self.FLOOR_HEIGHT = FLOOR_HEIGHT
         self.vel = DIR.none
         self.alive = True
@@ -22,17 +23,32 @@ class Solid:
     def update(self, mario) -> None:
         pass
 
-    def draw(self) -> None:
-        pyxel.blt(
-            self.x,
-            self.y,
-            0, # image map that we want to use
-            self.SPRITE_X,
-            self.SPRITE_Y,
-            self.WIDTH,
-            self.TALLNESS,
-            12 # color, blue, so it becomes transparent
-        )
+    def draw(self, level_x) -> None:
+        print(f"{self.x=} {level_x=}")
+        if self.PERSISTENT:
+            print(self.__class__)
+            pyxel.blt(
+                self.x - (0 if self.PERSISTENT else level_x),
+                self.y,
+                0, # image map that we want to use
+                self.SPRITE_X,
+                self.SPRITE_Y,
+                self.WIDTH,
+                self.TALLNESS,
+                12 # color, blue, so it becomes transparent
+            )
+        else:
+            print(self.__class__)
+            pyxel.blt(
+                self.x - (0 if self.PERSISTENT else level_x),
+                self.y,
+                0, # image map that we want to use
+                self.SPRITE_X,
+                self.SPRITE_Y,
+                self.WIDTH,
+                self.TALLNESS,
+                12 # color, blue, so it becomes transparent
+            )
 
     def height(self) -> float:
         return max(0, self.FLOOR_HEIGHT - self.TALLNESS - self.y)

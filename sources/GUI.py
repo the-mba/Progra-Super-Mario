@@ -11,8 +11,8 @@ class GUI:
         self.DEBUG = DEBUG
         self.WIDTH = WIDTH
     
-    def update(self, level_x) -> None:
-        self.background.update(level_x)
+    def update(self) -> None:
+        self.background.update()
         
     def draw(self, mario_points, mario_coins, mario_time) -> None:
         self.background.draw()
@@ -52,14 +52,14 @@ class GUI:
             self.BACKGROUND_SPEED = BACKGROUND_SPEED
             self.x = game_x
         
-        def update(self, game_x) -> None:
-                self.x = game_x
-        
+        def update(self) -> None:
+            pass
+
         def draw(self) -> None:
             # draw light blue background
             pyxel.cls(12)
 
-            print("self.x is ", self.x)
+            print(f"{self.x=}")
 
             # draw tilemap
             pyxel.bltm(0, 0, 0, self.x, 74, 128, 128)
