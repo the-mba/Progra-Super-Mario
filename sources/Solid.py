@@ -22,7 +22,7 @@ class Solid:
     def update(self, mario) -> None:
         pass
 
-    def draw(self):
+    def draw(self) -> None:
         pyxel.blt(
             self.x,
             self.y,
@@ -35,7 +35,7 @@ class Solid:
         )
 
     def height(self) -> float:
-        return self.FLOOR_HEIGHT - self.tallness - self.y
+        return max(0, self.FLOOR_HEIGHT - self.TALLNESS - self.y)
     
     def dir(self) -> DIR:
         x = self.vel_x

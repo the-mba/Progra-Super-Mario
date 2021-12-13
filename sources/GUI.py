@@ -11,8 +11,8 @@ class GUI:
         self.DEBUG = DEBUG
         self.WIDTH = WIDTH
     
-    def update(self, move_right) -> float:
-        return self.background.update(move_right)
+    def update(self) -> float:
+        return self.background.update()
         
     def draw(self, mario_points, mario_coins, mario_time) -> None:
         self.background.draw()

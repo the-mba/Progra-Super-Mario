@@ -1,26 +1,34 @@
 import pyxel
+import Solid
 
 class Goombas:
     def __init__(self) -> None:
         self.list = []
+    
+    def draw(self) -> None:
+        for goomba in self.list:
+            goomba.draw()
 
-    class Goomba:
-        def __init__(self, x, y, x_vel) -> None:
-            self.x = x
-            self.y = y
-            self.x_vel = x_vel
-        
-        def update(self, mario_pos) -> bool:
-            self.mario_x, self.mario_y = mario_pos
+    def new(self, STARTING_X, STARTING_Y,  STARTING_VEL_X, STARTING_VEL_Y,  WIDTH, TALLNESS,  SPRITE_X, SPRITE_Y,  FLOOR_HEIGHT):
+        new_goomba = Goomba(STARTING_X, STARTING_Y,  STARTING_VEL_X, STARTING_VEL_Y,  WIDTH, TALLNESS,  SPRITE_X, SPRITE_Y,  FLOOR_HEIGHT)
+        self.list.append(new_goomba)
+        return new_goomba
 
-        def draw(self):
-            pyxel.blt(
-            self.x,
-            self.y,
-            0,
-            32,
-            48,
-            16,
-            16,
-            12
-        )
+class Goomba(Solid.Solid):
+    def __init__(self, STARTING_X, STARTING_Y,  STARTING_VEL_X, STARTING_VEL_Y,  WIDTH, TALLNESS,  SPRITE_X, SPRITE_Y,  FLOOR_HEIGHT) -> None:
+        super().__init__(STARTING_X, STARTING_Y,  STARTING_VEL_X, STARTING_VEL_Y,  WIDTH, TALLNESS,  SPRITE_X, SPRITE_Y,  FLOOR_HEIGHT)
+    
+    def update(self, mario_pos) -> bool:
+        pass
+
+    def draw(self) -> None:
+        pyxel.blt(
+        self.x,
+        self.y,
+        0,
+        32,
+        48,
+        16,
+        16,
+        12
+    )
