@@ -101,6 +101,8 @@ class Entity:
 class Block(Entity):
     def update(self, game) -> None:
         super().update(game)
+        if self.collides(game.mario.corners()):
+            print("COLLISION DETECTED!!!")
 
         col_dir = self.collides(game.mario.corners())
         con_1 = col_dir != DIR.none
