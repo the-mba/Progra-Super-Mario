@@ -1,7 +1,8 @@
 import pyxel
+import numpy as np
+
 import Solid
-from Helper import DIR as DIR
-from Helper import BLOCK_TYPES
+from Helper import *
 from My_Collection import My_Collection
 
 class Solid:
@@ -19,8 +20,12 @@ class Solid:
         self.vel = DIR.none
         self.alive = True
 
-    def update(self, mario) -> None:
-        pass
+    def update(self, game) -> None:
+        # Y-movement and gravity
+        self.y = min(self.y + self.vel_y, self.FLOOR_HEIGHT - self.TALLNESS)
+        self.vel_y = self.vel_y + self.GRAVITY if self.height() > 0 else 0
+
+        self.vel = self.dir()
 
     def draw(self, level_x) -> None:
         pyxel.blt(
@@ -40,9 +45,11 @@ class Solid:
     def dir(self) -> DIR:
         x = self.vel_x
         y = self.vel_y
-        if x >= 0:
-            if y >= 0:
+        if x > 0:
+            if y > 0:
                 return DIR.down_right
+            elif y == 0:
+                pass
             else:
                 return DIR.up_right
         else:
@@ -77,14 +84,24 @@ class Solid:
 
 
 class Block(Solid):
+    def update(self, game) -> None:
+        super().update(game)
+        if numpy.dot(self.collides(mario.corners().value), DIR.up) < np.sin(np.pi / 4):
+            self.destroy(game)
+    
+    def destroy(self, game):
+        game.solids.list[1].list.remove(self)
+
+
+class Enemy(Solid):
     pass
 
 
-class Goomba(Solid):
+class Goomba(Enemy):
     pass
 
 
-class Pipe():
+class Pipe(Solid):
     def __init__(self, BLOCK_TYPE, STARTING_X, STARTING_Y, STARTING_VEL_X, STARTING_VEL_Y, FLOOR_HEIGHT, HEIGHT=2, PERSISTENT=False) -> None:
         self.parts = My_Collection(Pipe.Part)
         self.HEIGHT = HEIGHT
@@ -94,8 +111,8 @@ class Pipe():
         if self.HEIGHT - int(HEIGHT):
             self.parts.new(BLOCK_TYPES.half_pipe_body, STARTING_X, STARTING_Y + 16 * int(HEIGHT), STARTING_VEL_X, STARTING_VEL_Y, FLOOR_HEIGHT)
 
-    def update(self, mario) -> None:
-        self.parts.update(mario)
+    def update(self, game) -> None:
+        self.parts.update(game)
     
     def draw(self, level_x) -> None:
         self.parts.draw(level_x)

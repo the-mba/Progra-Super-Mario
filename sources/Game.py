@@ -4,32 +4,9 @@ import pyxel
 from Mario import Mario
 from Solid import Block, Goomba, Pipe
 from GUI import GUI
+from Helper import *
 from Helper import BLOCK_TYPES as B_T
 from My_Collection import My_Collection
-from My_Collection import My_Meta_Collection
-
-DEBUG = 1
-
-GAME_WIDTH = 256
-GAME_HEIGHT = 192
-BACKGROUND_RIGHT_MOVEMENT_THRESHOLD = GAME_WIDTH * 0.6
-BACKGROUND_SPEED = 1
-FLOOR_HEIGHT = GAME_HEIGHT - 32
-
-OFFSET = -12 if DEBUG else 0
-
-MARIO_TALLNESS = 16
-MARIO_WIDTH = MARIO_TALLNESS
-MARIO_SPRITE_X = 0
-MARIO_SPRITE_Y = 48
-
-MARIO_STARTING_X = 160
-MARIO_STARTING_Y = FLOOR_HEIGHT - MARIO_TALLNESS
-MARIO_STARTING_VEL_Y = 0
-MARIO_CONSTANT_VEL_X = 2
-GRAVITY = 0.5
-JUMPING_COEFFICIENT = 1.8
-
 
 class Game:
     def __init__(self) -> None:
@@ -38,7 +15,7 @@ class Game:
         pyxel.load("../assets/marioassets_133.pyxres")
 
         self.x = 0
-        self.gui = GUI(DEBUG, GAME_WIDTH, BACKGROUND_RIGHT_MOVEMENT_THRESHOLD, BACKGROUND_SPEED)
+        self.gui = GUI()
         self.mario = Mario(
             MARIO_STARTING_X, MARIO_STARTING_Y,
             MARIO_CONSTANT_VEL_X, MARIO_STARTING_VEL_Y,
@@ -49,7 +26,9 @@ class Game:
             PERSISTENT=True
         )
 
-        self.solids = My_Meta_Collection(Goomba, Block, Pipe)
+
+        self.solids = My_Collection(Goomba, Block, Pipe)
+
 
         self.goombas, self.blocks, self.pipes = self.solids.list
         
@@ -59,7 +38,7 @@ class Game:
         self.blocks.new(B_T.question, 41 * 8, 80 + OFFSET, 0, 0, FLOOR_HEIGHT)
         self.blocks.new(B_T.brick, 43 * 8, 80 + OFFSET,  0, 0, FLOOR_HEIGHT)
         self.blocks.new(B_T.question, 45 * 8, 80 + OFFSET, 0, 0, FLOOR_HEIGHT)
-        self.blocks.new(B_T.brick, 47 * 8, 80 + OFFSET,  0, 0, FLOOR_HEIGHT) # EL TILEMAP 84 SE QUEDA EN EL PIXEL 80 !!!
+        self.blocks.new(B_T.brick, 47 * 8, 80 + OFFSET,  0, 0, FLOOR_HEIGHT) # EL TILEMAP de altura 84 SE QUEDA EN EL PIXEL de altura 80 !!!
 
         self.pipes.new(B_T.pipe, 56*8 + OFFSET, 80 + 3 * 16, 0, 0, FLOOR_HEIGHT, 2)
         self.pipes.new(B_T.pipe, 72*8 + OFFSET, 80 + 1 * 16, 0, 0, FLOOR_HEIGHT, 4)
@@ -88,7 +67,7 @@ class Game:
         if self.mario.update(self.x * 8):
             self.x += BACKGROUND_SPEED
         
-        self.goombas.update(self.mario)
+        self.solids.update(self)
 
     def draw(self) -> None:
 

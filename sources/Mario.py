@@ -1,7 +1,6 @@
 import pyxel
 import Solid
-from Helper import DIR as DIR
-from  Helper import BLOCK_TYPES
+from Helper import *
 
 class Mario(Solid.Solid):
 
@@ -19,6 +18,8 @@ class Mario(Solid.Solid):
         self.jumps_pending = 0
 
     def update(self, level_x) -> bool: # returns True if the Mario moves and the Background has to move
+        super().update(level_x)
+        
         move_right = False
 
         # RIGHT
@@ -44,12 +45,6 @@ class Mario(Solid.Solid):
         if self.jumps_pending != 0:
             self.vel_y -= self.JUMPING_COEFFICIENT * self.jumps_pending
             self.jumps_pending -= 1
-
-        # Y-movement and gravity
-        self.y = min(self.y + self.vel_y, self.FLOOR_HEIGHT - self.TALLNESS)
-        self.vel_y = self.vel_y + self.GRAVITY if self.height() > 0 else 0
-
-        self.vel = self.dir()
 
         return move_right and self.x >= level_x + self.BACKGROUND_RIGHT_MOVEMENT_THRESHOLD
     
