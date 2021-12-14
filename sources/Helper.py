@@ -1,27 +1,32 @@
 import math, enum
 
-DEBUG = 1
+DEBUG = True
+OFFSET = -12 if DEBUG else 0
 
+# Background
 GAME_WIDTH = 256
 GAME_HEIGHT = 192
 BACKGROUND_RIGHT_MOVEMENT_THRESHOLD = GAME_WIDTH * 0.6
 BACKGROUND_SPEED = 1
 FLOOR_HEIGHT = GAME_HEIGHT - 32
 
-OFFSET = -12 if DEBUG else 0
-
+# Mario's sprite position and size
 MARIO_TALLNESS = 16
 MARIO_WIDTH = MARIO_TALLNESS
 MARIO_SPRITE_X = 0
 MARIO_SPRITE_Y = 48
 
+# Mario movement, and derivatives
 MARIO_STARTING_X = 160
-MARIO_STARTING_Y = FLOOR_HEIGHT - MARIO_TALLNESS  # 192 -32 -16 = 144
+MARIO_STARTING_Y = FLOOR_HEIGHT - MARIO_TALLNESS  # (192 -32) -16 = 144
 MARIO_STARTING_VEL_Y = 0
 MARIO_CONSTANT_VEL_X = 3
-GRAVITY = 2
-JUMPING_INITIAL_SPEED = 20
+MARIO_JUMPING_INITIAL_SPEED = 20
 
+# Universal Constant
+GRAVITY = 2
+
+# GUI
 POS_POINTS = 0.1
 POS_COINS = 0.3
 POS_WORLD = 0.6
@@ -40,6 +45,7 @@ class DIR(enum.Enum):
     up_left = (-r, -r)
     none = (0, 0) # only so the dot product is huge and it doesn't compute as a valid movement
 
+
 class BLOCK_TYPES(enum.Enum):
     # (x, y, w, h)
     #  x, y:        top-left corner of the sprite
@@ -48,6 +54,8 @@ class BLOCK_TYPES(enum.Enum):
     collection = (-1, -1, -1, 1)
 
     mario = (0, 48, 16, 16)
+
+    mushroom = (0, 32, 16, 16)
 
     brick = (0, 16, 16, 16)
     brick_clear = (16, 16, 16, 16)
@@ -61,3 +69,6 @@ class BLOCK_TYPES(enum.Enum):
     half_pipe_body = (32, 16, 32, 8)
 
     cloud = (16, 64, 3 *16, 1.5 *16)
+
+class EFECTS(enum.Enum):
+    Super = 1

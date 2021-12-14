@@ -1,6 +1,6 @@
 from random import randint
 
-import pyxel, time
+import pyxel
 from Mario import Mario
 from Entity import *
 from GUI import GUI
@@ -48,6 +48,8 @@ class Game:
         self.blocks.new(B_T.brick_clear, 140 * 8, 144 + OFFSET, 0, 0)
 
         self.decors.new(B_T.cloud, 30, 88, 0, 0)
+
+        self.blocks.new(B_T.mushroom, 110, 144, 0, 0)
 
         pyxel.run(self.update, self.draw)
 

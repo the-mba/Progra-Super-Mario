@@ -101,6 +101,7 @@ class Entity:
 class Block(Entity):
     def update(self, game) -> None:
         super().update(game)
+
         col_dir = self.collides(game.mario.corners())
         con_1 = col_dir != DIR.none
         if con_1:
@@ -144,3 +145,18 @@ class Pipe(Entity):
 
 class Decor(Entity):
     pass
+
+class Mushroom(Entity):
+    def update(self, game) -> None:
+        super().update(game)
+
+        col_dir = self.collides(game.mario.corners())
+        con_1 = col_dir != DIR.none
+        if con_1:
+            print(col_dir.value, DIR.up.value, np.dot(col_dir.value, DIR.up.value))
+        con_2 = True
+        if con_1 and con_2:
+            pass
+        pyxel.quit()
+
+        
