@@ -1,7 +1,7 @@
 import math, enum
 
 DEBUG = True
-OFFSET = -12 if DEBUG else 0
+OFFSET = -0 if DEBUG else 0
 
 # Background
 GAME_WIDTH = 256

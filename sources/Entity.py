@@ -158,5 +158,4 @@ class Mushroom(Entity):
         if con_1 and con_2:
             pass
         pyxel.quit()
-
-        
+        print("EEEEEEEEEE" * 10000)
