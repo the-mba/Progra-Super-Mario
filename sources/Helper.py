@@ -16,11 +16,11 @@ MARIO_SPRITE_X = 0
 MARIO_SPRITE_Y = 48
 
 MARIO_STARTING_X = 160
-MARIO_STARTING_Y = FLOOR_HEIGHT - MARIO_TALLNESS
+MARIO_STARTING_Y = FLOOR_HEIGHT - MARIO_TALLNESS  # 192 -32 -16 = 144
 MARIO_STARTING_VEL_Y = 0
 MARIO_CONSTANT_VEL_X = 3
 GRAVITY = 0.5
-JUMPING_COEFFICIENT = 1.8
+JUMPING_INITIAL_SPEED = 15
 
 POS_POINTS = 0.1
 POS_COINS = 0.3
@@ -41,12 +41,23 @@ class DIR(enum.Enum):
     none = (0, 0) # only so the dot product is huge and it doesn't compute as a valid movement
 
 class BLOCK_TYPES(enum.Enum):
+    # (x, y, w, h)
+    #  x, y:        top-left corner of the sprite
+    #        w, h:  width and height of the sprite
+
     collection = (-1, -1, -1, 1)
+
     mario = (0, 48, 16, 16)
+
     brick = (0, 16, 16, 16)
-    question = (16, 0, 16, 16)
+    brick_clear = (16, 16, 16, 16)
+    brick_question = (16, 0, 16, 16)
+
     goomba = (32, 48, 16, 16)
+
     pipe = (32, 0, 32, 32)  # just a placeholder, these values shouldn't be directly used. Instead, it should create a pipe_head and several pipe_body
     pipe_head = (32, 0, 32, 16)
     pipe_body = (32, 16, 32, 16)
     half_pipe_body = (32, 16, 32, 8)
+
+    cloud = (16, 64, 24, 16)

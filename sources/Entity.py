@@ -1,11 +1,10 @@
 import pyxel
 import numpy as np
 
-import Solid
 from Helper import *
 from My_Collection import My_Collection
 
-class Solid:
+class Entity:
     def __init__(self, BLOCK_TYPE, STARTING_X, STARTING_Y, STARTING_VEL_X, STARTING_VEL_Y, HEIGHT=1, FALLS=False, PERSISTENT=False) -> None:
         self.BLOCK_TYPE = BLOCK_TYPE
         self.FALLS = FALLS
@@ -26,8 +25,10 @@ class Solid:
     def update(self, game) -> None:
         # Y-movement and gravity
         self.y = min(self.y + self.vel_y, FLOOR_HEIGHT - self.TALLNESS)
-        if self.FALLS:
-            self.vel_y = self.vel_y + GRAVITY if self.height() > 0 else 0
+        if self.FALLS and self.height():
+            self.vel_y += GRAVITY
+        else:
+            self.vel_y = 0
 
         self.vel = self.dir()
 
@@ -78,20 +79,20 @@ class Solid:
     def collides(self, corners) -> DIR:
         side = DIR.none
 
-        if ((self.x <= corners[0][0] and corners[0][0] <= self.x + self.width) and 
-            (self.y <= corners[0][1] and corners[0][1] <= self.y + self.height)):
+        if ((self.x <= corners[0][0] and corners[0][0] <= self.x + self.WIDTH) and 
+            (self.y <= corners[0][1] and corners[0][1] <= self.y + self.TALLNESS)):
             side = DIR.up_left
 
-        if ((self.x <= corners[1][0] and corners[1][0] <= self.x + self.width) and
-            (self.y <= corners[1][1] and corners[1][1] <= self.y + self.height)):
+        if ((self.x <= corners[1][0] and corners[1][0] <= self.x + self.WIDTH) and
+            (self.y <= corners[1][1] and corners[1][1] <= self.y + self.TALLNESS)):
             side = DIR.up_right
 
-        if ((self.x <= corners[2][0] and corners[2][0] <= self.x + self.width) and
-            (self.y <= corners[2][1] and corners[2][1] <= self.y + self.height)):
+        if ((self.x <= corners[2][0] and corners[2][0] <= self.x + self.WIDTH) and
+            (self.y <= corners[2][1] and corners[2][1] <= self.y + self.TALLNESS)):
             side = DIR.down_left
 
-        if ((self.x <= corners[3][0] and corners[3][0] <= self.x + self.width) and
-            (self.y <= corners[3][1] and corners[3][1] <= self.y + self.height)):
+        if ((self.x <= corners[3][0] and corners[3][0] <= self.x + self.WIDTH) and
+            (self.y <= corners[3][1] and corners[3][1] <= self.y + self.TALLNESS)):
             side = DIR.down_right 
 
         return side         
@@ -100,20 +101,22 @@ class Solid:
         return ((self.x, self.y), (self.x + self.WIDTH, self.y), (self.x, self.y + self.TALLNESS), (self.x + self.WIDTH, self.y + self.TALLNESS))
 
 
-class Block(Solid):
+class Block(Entity):
     def update(self, game) -> None:
         super().update(game)
-        col = self.collides(game.mario.corners())
-        con_1 = col != DIR.none
-        con_2 = np.dot(col.value, DIR.up.value) < np.sin(np.pi / 4)
+        col_dir = self.collides(game.mario.corners())
+        con_1 = col_dir != DIR.none
+        con_2 = np.dot(col_dir.value, DIR.up.value) < np.sin(np.pi / 4)
         if con_1 and con_2:
             self.destroy(game)
     
     def destroy(self, game):
-        pass #game.solids.list[1].list.remove(self)
+        game.solids.list[1].list.remove(self)
+        game.mario.y = self.y + self.TALLNESS
+        game.mario.vel_y = 0
 
 
-class Enemy(Solid):
+class Enemy(Entity):
     pass
 
 
@@ -121,7 +124,7 @@ class Goomba(Enemy):
     pass
 
 
-class Pipe(Solid):
+class Pipe(Entity):
     def __init__(self, BLOCK_TYPE, STARTING_X, STARTING_Y, STARTING_VEL_X, STARTING_VEL_Y, HEIGHT=2, FALLS=False, PERSISTENT=False) -> None:
         self.parts = My_Collection(Pipe.Part)
         self.HEIGHT = HEIGHT
@@ -137,6 +140,8 @@ class Pipe(Solid):
     def draw(self, game) -> None:
         self.parts.draw(game)
     
-    class Part(Solid):
+    class Part(Entity):
         pass
-        
+
+class Decor(Entity):
+    pass
