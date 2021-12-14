@@ -10,8 +10,8 @@ from My_Collection import My_Collection
 
 class Game:
     def __init__(self) -> None:
-        
-        self.once = False
+
+        self.printed = []
 
         pyxel.init(GAME_WIDTH, GAME_HEIGHT, caption="Pyxel Jump")
         pyxel.load("../assets/marioassets_133.pyxres")
@@ -21,9 +21,10 @@ class Game:
         self.mario = Mario(
             MARIO_STARTING_X, MARIO_STARTING_Y,
             MARIO_STARTING_VEL_Y,
+            FALLS=True,
             PERSISTENT=True
         )
-
+        
 
         self.solids = My_Collection(Goomba, Block, Pipe)
 
@@ -69,16 +70,11 @@ class Game:
 
     def draw(self) -> None:
 
-        self.gui.draw(self.x, self.mario.points, self.mario.coins, self.mario.time)
+        self.gui.draw(self)
 
-        self.mario.draw(self.x * 8)
+        self.solids.draw(self)
 
-        self.solids.draw(self.x * 8)
-
-        if self.once:
-            time.sleep(5000)
-        else:
-            self.once = True
+        self.mario.draw(self)
 
         
 

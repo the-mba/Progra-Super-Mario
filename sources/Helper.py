@@ -38,7 +38,7 @@ class DIR(enum.Enum):
     down_left = (-r, r)
     left = (-1, 0)
     up_left = (-r, -r)
-    none = (0, 0)
+    none = (0, 0) # only so the dot product is huge and it doesn't compute as a valid movement
 
 class BLOCK_TYPES(enum.Enum):
     collection = (-1, -1, -1, 1)

@@ -4,8 +4,8 @@ from Helper import *
 
 class Mario(Solid.Solid):
 
-    def __init__(self, MARIO_STARTING_X, MARIO_STARTING_Y, MARIO_STARTING_VEL_Y, PERSISTENT) -> None:
-        super().__init__(BLOCK_TYPES.mario, MARIO_STARTING_X, MARIO_STARTING_Y, 0, MARIO_STARTING_VEL_Y, 1, True)
+    def __init__(self, MARIO_STARTING_X, MARIO_STARTING_Y, MARIO_STARTING_VEL_Y, FALLS=False, PERSISTENT=True) -> None:
+        super().__init__(BLOCK_TYPES.mario, MARIO_STARTING_X, MARIO_STARTING_Y, 0, MARIO_STARTING_VEL_Y, FALLS=FALLS, PERSISTENT=PERSISTENT)
 
         self.points = 0
         self.coins = 0

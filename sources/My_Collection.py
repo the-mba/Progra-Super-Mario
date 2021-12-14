@@ -14,9 +14,9 @@ class My_Collection:
         for element in self.list:
             element.update(game)
     
-    def draw(self, level_x) -> None:
+    def draw(self, game) -> None:
         for element in self.list:                
-            element.draw(level_x)
+            element.draw(game)
 
     def new(self, BLOCK_TYPE, STARTING_X, STARTING_Y,  STARTING_VEL_X, STARTING_VEL_Y, HEIGHT=1, PERSISTENT=False):
         if self.element_type == type(self):

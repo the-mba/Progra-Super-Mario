@@ -6,8 +6,9 @@ from Helper import *
 from My_Collection import My_Collection
 
 class Solid:
-    def __init__(self, BLOCK_TYPE, STARTING_X, STARTING_Y, STARTING_VEL_X, STARTING_VEL_Y, HEIGHT=1, PERSISTENT=False) -> None:
+    def __init__(self, BLOCK_TYPE, STARTING_X, STARTING_Y, STARTING_VEL_X, STARTING_VEL_Y, HEIGHT=1, FALLS=False, PERSISTENT=False) -> None:
         self.BLOCK_TYPE = BLOCK_TYPE
+        self.FALLS = FALLS
         
         self.x = STARTING_X
         self.y = STARTING_Y
@@ -25,13 +26,14 @@ class Solid:
     def update(self, game) -> None:
         # Y-movement and gravity
         self.y = min(self.y + self.vel_y, FLOOR_HEIGHT - self.TALLNESS)
-        self.vel_y = self.vel_y + GRAVITY if self.height() > 0 else 0
+        if self.FALLS:
+            self.vel_y = self.vel_y + GRAVITY if self.height() > 0 else 0
 
         self.vel = self.dir()
 
-    def draw(self, level_x) -> None:
+    def draw(self, game) -> None:
         pyxel.blt(
-            self.x - level_x,
+            self.x - game.x * 8,
             self.y,
             0, # image map that we want to use
             self.SPRITE_X,
@@ -40,26 +42,38 @@ class Solid:
             self.TALLNESS,
             12 # color, blue, so it becomes transparent
         )
-        print("PRINTED", self.BLOCK_TYPE.name, "on", self.x, self.y)
 
     def height(self) -> float:
         return max(0, FLOOR_HEIGHT - self.TALLNESS - self.y)
     
     def dir(self) -> DIR:
-        x = self.vel_x
-        y = self.vel_y
-        if x > 0:
-            if y > 0:
-                return DIR.down_right
-            elif y == 0:
-                pass
+        vel_x = self.vel_x
+        vel_y = self.vel_y
+        dir = None
+
+        if vel_x > 0:
+            if vel_y > 0:
+                dir = DIR.down_right
+            elif vel_y == 0:
+                dir = DIR.right
             else:
-                return DIR.up_right
+                dir = DIR.up_right
+        elif vel_x == 0:
+            if vel_y > 0:
+                dir = DIR.down
+            elif vel_y == 0:
+                dir = DIR.none
+            else:
+                dir = DIR.up
         else:
-            if y >= 0:
-                return DIR.down_left
+            if vel_y > 0:
+                dir = DIR.down_left
+            elif vel_y == 0:
+                dir = DIR.left
             else:
-                return DIR.up_left
+                dir = DIR.up_left
+        
+        return dir
 
     def collides(self, corners) -> DIR:
         side = DIR.none
@@ -89,11 +103,14 @@ class Solid:
 class Block(Solid):
     def update(self, game) -> None:
         super().update(game)
-        if np.dot(self.collides(game.mario.corners()).value, DIR.up.value) < np.sin(np.pi / 4):
+        col = self.collides(game.mario.corners())
+        con_1 = col != DIR.none
+        con_2 = np.dot(col.value, DIR.up.value) < np.sin(np.pi / 4)
+        if con_1 and con_2:
             self.destroy(game)
     
     def destroy(self, game):
-        game.solids.list[1].list.remove(self)
+        pass #game.solids.list[1].list.remove(self)
 
 
 class Enemy(Solid):
@@ -105,7 +122,7 @@ class Goomba(Enemy):
 
 
 class Pipe(Solid):
-    def __init__(self, BLOCK_TYPE, STARTING_X, STARTING_Y, STARTING_VEL_X, STARTING_VEL_Y, FLOOR_HEIGHT, HEIGHT=2, PERSISTENT=False) -> None:
+    def __init__(self, BLOCK_TYPE, STARTING_X, STARTING_Y, STARTING_VEL_X, STARTING_VEL_Y, HEIGHT=2, FALLS=False, PERSISTENT=False) -> None:
         self.parts = My_Collection(Pipe.Part)
         self.HEIGHT = HEIGHT
         self.parts.new(BLOCK_TYPES.pipe_head, STARTING_X, STARTING_Y, STARTING_VEL_X, STARTING_VEL_Y)
@@ -117,8 +134,8 @@ class Pipe(Solid):
     def update(self, game) -> None:
         self.parts.update(game)
     
-    def draw(self, level_x) -> None:
-        self.parts.draw(level_x)
+    def draw(self, game) -> None:
+        self.parts.draw(game)
     
     class Part(Solid):
         pass
