@@ -47,7 +47,7 @@ class Game:
 
         self.blocks.new(B_T.brick_clear, 140 * 8, 144 + OFFSET, 0, 0)
 
-        self.decors.new(B_T.cloud, 30, 128, 0, 0)
+        self.decors.new(B_T.cloud, 30, 88, 0, 0)
 
         pyxel.run(self.update, self.draw)
 

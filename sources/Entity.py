@@ -1,4 +1,4 @@
-import pyxel
+import pyxel, math
 import numpy as np
 
 from Helper import *
@@ -18,7 +18,6 @@ class Entity:
         self.SPRITE_X, self.SPRITE_Y, self.WIDTH, self.TALLNESS = BLOCK_TYPE.value
 
         self.PERSISTENT = PERSISTENT
-        self.vel = DIR.none
         self.alive = True
 
     # Only call super().update(game) on Solids that can move
@@ -29,8 +28,6 @@ class Entity:
             self.vel_y += GRAVITY
         else:
             self.vel_y = 0
-
-        self.vel = self.dir()
 
     def draw(self, game) -> None:
         pyxel.blt(
@@ -106,7 +103,9 @@ class Block(Entity):
         super().update(game)
         col_dir = self.collides(game.mario.corners())
         con_1 = col_dir != DIR.none
-        con_2 = np.dot(col_dir.value, DIR.up.value) < np.sin(np.pi / 4)
+        if con_1:
+            print(col_dir.value, DIR.up.value, np.dot(col_dir.value, DIR.up.value))
+        con_2 = np.dot(col_dir.value, DIR.up.value) > np.cos(math.radians(45))
         if con_1 and con_2:
             self.destroy(game)
     
