@@ -4,14 +4,9 @@ from Helper import *
 
 class Mario(Solid.Solid):
 
-    def __init__(self, MARIO_STARTING_X, MARIO_STARTING_Y, MARIO_CONSTANT_VEL_X, MARIO_STARTING_VEL_Y, FLOOR_HEIGHT, BACKGROUND_RIGHT_MOVEMENT_THRESHOLD, GRAVITY, JUMPING_COEFFICIENT, PERSISTENT) -> None:
-        super().__init__(BLOCK_TYPES.mario, MARIO_STARTING_X, MARIO_STARTING_Y, 0, MARIO_STARTING_VEL_Y, FLOOR_HEIGHT, 1, True)
+    def __init__(self, MARIO_STARTING_X, MARIO_STARTING_Y, MARIO_STARTING_VEL_Y, PERSISTENT) -> None:
+        super().__init__(BLOCK_TYPES.mario, MARIO_STARTING_X, MARIO_STARTING_Y, 0, MARIO_STARTING_VEL_Y, 1, True)
 
-        self.MARIO_CONSTANT_VEL_X = MARIO_CONSTANT_VEL_X
-        self.BACKGROUND_RIGHT_MOVEMENT_THRESHOLD = BACKGROUND_RIGHT_MOVEMENT_THRESHOLD
-        self.FLOOR_HEIGHT = FLOOR_HEIGHT
-        self.GRAVITY = GRAVITY
-        self.JUMPING_COEFFICIENT = JUMPING_COEFFICIENT
         self.points = 0
         self.coins = 0
         self.time = 0
@@ -24,16 +19,16 @@ class Mario(Solid.Solid):
 
         # RIGHT
         if pyxel.btnp(pyxel.KEY_RIGHT, 1, 1):
-            self.vel_x = self.MARIO_CONSTANT_VEL_X
+            self.vel_x = MARIO_CONSTANT_VEL_X
             self.x += self.vel_x
-            if self.x >= level_x + self.BACKGROUND_RIGHT_MOVEMENT_THRESHOLD:
-                self.x = level_x + self.BACKGROUND_RIGHT_MOVEMENT_THRESHOLD + 8
+            if self.x >= level_x + BACKGROUND_RIGHT_MOVEMENT_THRESHOLD:
+                self.x = level_x + BACKGROUND_RIGHT_MOVEMENT_THRESHOLD + 8
             move_right = True
         else:
             self.vel_x = 0
         # LEFT
         if pyxel.btnp(pyxel.KEY_LEFT, 1, 1):
-            self.vel_x = -self.MARIO_CONSTANT_VEL_X
+            self.vel_x = -MARIO_CONSTANT_VEL_X
             self.x = max(self.x + self.vel_x, level_x)
         else:
             self.vel_x = 0
@@ -43,9 +38,9 @@ class Mario(Solid.Solid):
             if self.height() == 0:
                 self.jumps_pending = 3
         if self.jumps_pending != 0:
-            self.vel_y -= self.JUMPING_COEFFICIENT * self.jumps_pending
+            self.vel_y -= JUMPING_COEFFICIENT * self.jumps_pending
             self.jumps_pending -= 1
 
-        return move_right and self.x >= level_x + self.BACKGROUND_RIGHT_MOVEMENT_THRESHOLD
+        return move_right and self.x >= level_x + BACKGROUND_RIGHT_MOVEMENT_THRESHOLD
     
     

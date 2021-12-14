@@ -6,7 +6,9 @@ from Helper import *
 from My_Collection import My_Collection
 
 class Solid:
-    def __init__(self, BLOCK_TYPE, STARTING_X, STARTING_Y, STARTING_VEL_X, STARTING_VEL_Y, FLOOR_HEIGHT, HEIGHT=1, PERSISTENT=False) -> None:
+    def __init__(self, BLOCK_TYPE, STARTING_X, STARTING_Y, STARTING_VEL_X, STARTING_VEL_Y, HEIGHT=1, PERSISTENT=False) -> None:
+        self.BLOCK_TYPE = BLOCK_TYPE
+        
         self.x = STARTING_X
         self.y = STARTING_Y
 
@@ -16,14 +18,14 @@ class Solid:
         self.SPRITE_X, self.SPRITE_Y, self.WIDTH, self.TALLNESS = BLOCK_TYPE.value
 
         self.PERSISTENT = PERSISTENT
-        self.FLOOR_HEIGHT = FLOOR_HEIGHT
         self.vel = DIR.none
         self.alive = True
 
+    # Only call super().update(game) on Solids that can move
     def update(self, game) -> None:
         # Y-movement and gravity
-        self.y = min(self.y + self.vel_y, self.FLOOR_HEIGHT - self.TALLNESS)
-        self.vel_y = self.vel_y + self.GRAVITY if self.height() > 0 else 0
+        self.y = min(self.y + self.vel_y, FLOOR_HEIGHT - self.TALLNESS)
+        self.vel_y = self.vel_y + GRAVITY if self.height() > 0 else 0
 
         self.vel = self.dir()
 
@@ -38,9 +40,10 @@ class Solid:
             self.TALLNESS,
             12 # color, blue, so it becomes transparent
         )
+        print("PRINTED", self.BLOCK_TYPE.name, "on", self.x, self.y)
 
     def height(self) -> float:
-        return max(0, self.FLOOR_HEIGHT - self.TALLNESS - self.y)
+        return max(0, FLOOR_HEIGHT - self.TALLNESS - self.y)
     
     def dir(self) -> DIR:
         x = self.vel_x
@@ -80,13 +83,13 @@ class Solid:
         return side         
         
     def corners(self) -> tuple:
-        return ((self.x, self.y), (self.x + self.WIDTH, self.y), (self.x, self.y + self.MARIO_TALLNESS), (self.x + self.WIDTH, self.y + self.MARIO_TALLNESS))
+        return ((self.x, self.y), (self.x + self.WIDTH, self.y), (self.x, self.y + self.TALLNESS), (self.x + self.WIDTH, self.y + self.TALLNESS))
 
 
 class Block(Solid):
     def update(self, game) -> None:
         super().update(game)
-        if numpy.dot(self.collides(mario.corners().value), DIR.up) < np.sin(np.pi / 4):
+        if np.dot(self.collides(game.mario.corners()).value, DIR.up.value) < np.sin(np.pi / 4):
             self.destroy(game)
     
     def destroy(self, game):
@@ -105,11 +108,11 @@ class Pipe(Solid):
     def __init__(self, BLOCK_TYPE, STARTING_X, STARTING_Y, STARTING_VEL_X, STARTING_VEL_Y, FLOOR_HEIGHT, HEIGHT=2, PERSISTENT=False) -> None:
         self.parts = My_Collection(Pipe.Part)
         self.HEIGHT = HEIGHT
-        self.parts.new(BLOCK_TYPES.pipe_head, STARTING_X, STARTING_Y, STARTING_VEL_X, STARTING_VEL_Y, FLOOR_HEIGHT)
+        self.parts.new(BLOCK_TYPES.pipe_head, STARTING_X, STARTING_Y, STARTING_VEL_X, STARTING_VEL_Y)
         for i in range(1, int(HEIGHT)):
-            self.parts.new(BLOCK_TYPES.pipe_body, STARTING_X, STARTING_Y + 16 * i, STARTING_VEL_X, STARTING_VEL_Y, FLOOR_HEIGHT)
+            self.parts.new(BLOCK_TYPES.pipe_body, STARTING_X, STARTING_Y + 16 * i, STARTING_VEL_X, STARTING_VEL_Y)
         if self.HEIGHT - int(HEIGHT):
-            self.parts.new(BLOCK_TYPES.half_pipe_body, STARTING_X, STARTING_Y + 16 * int(HEIGHT), STARTING_VEL_X, STARTING_VEL_Y, FLOOR_HEIGHT)
+            self.parts.new(BLOCK_TYPES.half_pipe_body, STARTING_X, STARTING_Y + 16 * int(HEIGHT), STARTING_VEL_X, STARTING_VEL_Y)
 
     def update(self, game) -> None:
         self.parts.update(game)
