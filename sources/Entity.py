@@ -12,6 +12,10 @@ class Entity:
         self.x = STARTING_X
         self.y = STARTING_Y
 
+        self.prev_x = self.x
+        self.prev_y = self.y
+        
+
         self.vel_x = STARTING_VEL_X
         self.vel_y = STARTING_VEL_Y
 
@@ -22,6 +26,7 @@ class Entity:
 
     # Only call super().update(game) on Solids that can move
     def update(self, game) -> None:
+        self.prev_y = self.y
         # Y-movement and gravity
         self.y = min(self.y + self.vel_y, FLOOR_HEIGHT - self.TALLNESS)
         if self.FALLS and self.height():
@@ -73,6 +78,8 @@ class Entity:
         
         return dir
 
+
+
     def collides(self, corners) -> DIR:
         side = DIR.none
 
@@ -101,19 +108,20 @@ class Entity:
 class Block(Entity):
     def update(self, game) -> None:
         super().update(game)
-        if self.collides(game.mario.corners()):
+        if self.#####DEPRECATED: collides(game.mario.corners()):
             print("COLLISION DETECTED!!!")
 
-        col_dir = self.collides(game.mario.corners())
+        """col_dir = self.collides(game.mario.corners())
         con_1 = col_dir != DIR.none
         if con_1:
             print(col_dir.value, DIR.up.value, np.dot(col_dir.value, DIR.up.value))
         con_2 = np.dot(col_dir.value, DIR.up.value) > np.cos(math.radians(45))
         if con_1 and con_2:
-            self.destroy(game)
+            self.destroy(game)"""  # THIS WHOLE THING IS KINDA BS, NEEDS A REWRITE !!!
     
     def destroy(self, game):
         game.solids.list[1].list.remove(self)
+        game.mario.prev_y = game.mario.y
         game.mario.y = self.y + self.TALLNESS
         game.mario.vel_y = 0
 
@@ -152,7 +160,7 @@ class Mushroom(Entity):
     def update(self, game) -> None:
         super().update(game)
 
-        col_dir = self.collides(game.mario.corners())
+        col_dir = self.#####DEPRECATED: collides(game.mario.corners())
         con_1 = col_dir != DIR.none
         if con_1:
             print(col_dir.value, DIR.up.value, np.dot(col_dir.value, DIR.up.value))
