@@ -33,6 +33,9 @@ class Entity:
             self.vel_y += GRAVITY
         else:
             self.vel_y = 0
+        
+        self.prev_x = self.x
+        self.x += self.vel_x
 
     def draw(self, game) -> None:
         pyxel.blt(
@@ -69,13 +72,13 @@ class Block(Entity):
         super().update(game)
         corners = game.mario.corners()
         side = DIR.none
-        a = game.mario.angle() % math.pi 
+        a = game.mario.angle()
         print("Mario's angle is: ", a)
         if ((self.x <= corners[0][0] and corners[0][0] <= self.x + self.WIDTH) and 
             (self.y <= corners[0][1] and corners[0][1] <= self.y + self.TALLNESS)):
-            if a == math.radians(90):
+            if abs(a - math.radians(90)) < 10 ^(-3):
                 side = DIR.down
-            elif a == math.radians(180):
+            elif abs(a - math.radians(180)) < 10 ^(-3):
                 side = DIR.right
             else:
                 p = game.mario.rect_func(self.x)
@@ -91,9 +94,9 @@ class Block(Entity):
 
         if ((self.x <= corners[1][0] and corners[1][0] <= self.x + self.WIDTH) and
             (self.y <= corners[1][1] and corners[1][1] <= self.y + self.TALLNESS)):
-            if a == 0:
+            if abs(a - math.radians(0)) < 10 ^(-3):
                 side = DIR.left
-            elif a == math.radians(90):
+            elif abs(a - math.radians(90)) < 10 ^(-3):
                 side = DIR.down
             else:
                 p = game.mario.rect_func(self.x - game.mario.WIDTH)
@@ -109,9 +112,9 @@ class Block(Entity):
 
         if ((self.x <= corners[2][0] and corners[2][0] <= self.x + self.WIDTH) and
             (self.y <= corners[2][1] and corners[2][1] <= self.y + self.TALLNESS)):
-            if a == math.radians(180):
+            if abs(a - math.radians(180)) < 10 ^(-3):
                 side = DIR.right
-            elif a == math.radians(-90):
+            elif abs(a - math.radians(-90)) < 10 ^(-3):
                 side = DIR.up
             else:
                 p = game.mario.rect_func(self.x) + game.mario.TALLNESS
@@ -127,9 +130,9 @@ class Block(Entity):
 
         if ((self.x <= corners[3][0] and corners[3][0] <= self.x + self.WIDTH) and
             (self.y <= corners[3][1] and corners[3][1] <= self.y + self.TALLNESS)):
-            if a == 0:
+            if abs(a - math.radians(0)) < 10 ^(-3):
                 side = DIR.left
-            elif a == math.radians(-90):
+            elif abs(a - math.radians(-90)) < 10 ^(-3):
                 side = DIR.up
             else:
                 p = game.mario.rect_func(self.x - game.mario.WIDTH) + game.mario.TALLNESS
@@ -142,7 +145,7 @@ class Block(Entity):
                     side = DIR.left
                 else:
                     side = DIR.up
-
+                    
         if side != DIR.none:
             print("COLLISION DETECTED!!! from", side.name)
         else:
