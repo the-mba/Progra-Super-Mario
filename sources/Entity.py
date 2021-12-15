@@ -49,70 +49,102 @@ class Entity:
     def height(self) -> float:
         return max(0, FLOOR_HEIGHT - self.TALLNESS - self.y)
     
-    
-
-    def collides(self, corners) -> tuple:
-        col, side = False, DIR.none
-
-        if ((self.x <= corners[0][0] and corners[0][0] <= self.x + self.WIDTH) and 
-            (self.y <= corners[0][1] and corners[0][1] <= self.y + self.TALLNESS)):
-            side = DIR.up_left
-            col = True
-
-        if ((self.x <= corners[1][0] and corners[1][0] <= self.x + self.WIDTH) and
-            (self.y <= corners[1][1] and corners[1][1] <= self.y + self.TALLNESS)):
-            side = DIR.up_right
-            col = True
-
-        if ((self.x <= corners[2][0] and corners[2][0] <= self.x + self.WIDTH) and
-            (self.y <= corners[2][1] and corners[2][1] <= self.y + self.TALLNESS)):
-            side = DIR.down_left
-            col = True
-
-        if ((self.x <= corners[3][0] and corners[3][0] <= self.x + self.WIDTH) and
-            (self.y <= corners[3][1] and corners[3][1] <= self.y + self.TALLNESS)):
-            side = DIR.down_right 
-            col = True
-
-        return col, side         
+    def angle(self) -> float:
+        return math.atan2(self.vel_y, self.vel_x)      
         
     def corners(self) -> tuple:
         return ((self.x, self.y), (self.x + self.WIDTH, self.y), (self.x, self.y + self.TALLNESS), (self.x + self.WIDTH, self.y + self.TALLNESS))
+    
+    def rect_func(self, x) -> float:
+        p = (self.y - self.prev_y) / (self.x - self.prev_x)
+        return self.prev_y + p * (x - self.prev_x)
+    
+    def rect_func_inv(self, y) -> float:
+        p = (self.x - self.prev_x) / (self.y - self.prev_y)
+        return self.prev_x + p * (y - self.prev_y)
 
 
 class Block(Entity):
     def update(self, game) -> None:
         super().update(game)
+        corners = game.mario.corners()
         side = DIR.none
+        a = game.mario.angle() % math.pi 
+        print("Mario's angle is: ", a)
         if ((self.x <= corners[0][0] and corners[0][0] <= self.x + self.WIDTH) and 
             (self.y <= corners[0][1] and corners[0][1] <= self.y + self.TALLNESS)):
-            p = game.mario.rect_func(self.x)
-            p_inv = game.mario.rect_func_inv(self.y) + game.mario.WIDTH
-            if self.y <= p and p <= self.y + self.TALLNESS:
-                side = DIR.right
-            elif self.x <= p_inv and p_inv <= self.x + self.WIDTH:
+            if a == math.radians(90):
                 side = DIR.down
-            elif 
+            elif a == math.radians(180):
+                side = DIR.right
+            else:
+                p = game.mario.rect_func(self.x)
+                p_inv = game.mario.rect_func_inv(self.y)
+                if self.y <= p and p <= self.y + self.TALLNESS:
+                    side = DIR.right
+                elif self.x <= p_inv and p_inv <= self.x + self.WIDTH:
+                    side = DIR.down
+                elif math.radians(135) <= a and a <= math.radians(180):
+                    side = DIR.right
+                else:
+                    side = DIR.down
 
         if ((self.x <= corners[1][0] and corners[1][0] <= self.x + self.WIDTH) and
             (self.y <= corners[1][1] and corners[1][1] <= self.y + self.TALLNESS)):
-            p = game.mario.rect_func(self.x - self.WIDTH)
-            if self.y <= p and p <= self.y + self.TALLNESS:
-                side = DIR.right
-            p_inv = game.mario.rect_func_inv(self.y) + game.mario.WIDTH
-            if self.x <= p_inv and p_inv <= self.x + self.WIDTH:
+            if a == 0:
+                side = DIR.left
+            elif a == math.radians(90):
                 side = DIR.down
-
-
+            else:
+                p = game.mario.rect_func(self.x - game.mario.WIDTH)
+                p_inv = game.mario.rect_func_inv(self.y) + game.mario.WIDTH
+                if self.y <= p and p <= self.y + self.TALLNESS:
+                    side = DIR.left
+                if self.x <= p_inv and p_inv <= self.x + self.WIDTH:
+                    side = DIR.down
+                elif 0 <= a and a <= math.radians(45):
+                    side = DIR.left
+                else:
+                    side = DIR.down
 
         if ((self.x <= corners[2][0] and corners[2][0] <= self.x + self.WIDTH) and
             (self.y <= corners[2][1] and corners[2][1] <= self.y + self.TALLNESS)):
-            side = DIR.down_left
+            if a == math.radians(180):
+                side = DIR.right
+            elif a == math.radians(-90):
+                side = DIR.up
+            else:
+                p = game.mario.rect_func(self.x) + game.mario.TALLNESS
+                p_inv = game.mario.rect_func_inv(self.y - game.mario.TALLNESS)
+                if self.y <= p and p <= self.y + self.TALLNESS:
+                    side = DIR.right
+                if self.x <= p_inv and p_inv <= self.x + self.WIDTH:
+                    side = DIR.up
+                elif math.radians(-180) <= a and a <= math.radians(-135):
+                    side = DIR.right
+                else:
+                    side = DIR.up
 
         if ((self.x <= corners[3][0] and corners[3][0] <= self.x + self.WIDTH) and
             (self.y <= corners[3][1] and corners[3][1] <= self.y + self.TALLNESS)):
-            side = DIR.down_right
-            print("COLLISION DETECTED!!!")
+            if a == 0:
+                side = DIR.left
+            elif a == math.radians(-90):
+                side = DIR.up
+            else:
+                p = game.mario.rect_func(self.x - game.mario.WIDTH) + game.mario.TALLNESS
+                p_inv = game.mario.rect_func_inv(self.y - game.mario.TALLNESS) + game.mario.WIDTH
+                if self.y <= p and p <= self.y + self.TALLNESS:
+                    side = DIR.left
+                if self.x <= p_inv and p_inv <= self.x + self.WIDTH:
+                    side = DIR.up
+                elif math.radians(-180) <= a and a <= math.radians(-135):
+                    side = DIR.left
+                else:
+                    side = DIR.up
+
+        if side != DIR.none:
+            print("COLLISION DETECTED!!! from", side.name)
         else:
             print("Not anymore")
 
@@ -123,14 +155,6 @@ class Block(Entity):
         con_2 = np.dot(col_dir.value, DIR.up.value) > np.cos(math.radians(45))
         if con_1 and con_2:
             self.destroy(game)"""  # THIS WHOLE THING IS KINDA BS, NEEDS A REWRITE !!!
-    
-    def rect_func(self, x) -> float:
-        p = (self.y - self.prev_y) / (self.x - self.prev_x)
-        return self.prev_y + p * (x - self.prev_x)
-    
-    def rect_func_inv(self, y) -> float:
-        p = (self.x - self.prev_x) / (self.y - self.prev_y)
-        return self.prev_x + p * (y - self.prev_y)
 
     def destroy(self, game):
         game.solids.list[1].list.remove(self)
@@ -223,3 +247,28 @@ class Mushroom(Entity):
                 dir = DIR.up_left
         
         return dir """
+    
+def collides(self, corners) -> tuple:
+        col, side = False, DIR.none
+
+        if ((self.x <= corners[0][0] and corners[0][0] <= self.x + self.WIDTH) and 
+            (self.y <= corners[0][1] and corners[0][1] <= self.y + self.TALLNESS)):
+            side = DIR.up_left
+            col = True
+
+        if ((self.x <= corners[1][0] and corners[1][0] <= self.x + self.WIDTH) and
+            (self.y <= corners[1][1] and corners[1][1] <= self.y + self.TALLNESS)):
+            side = DIR.up_right
+            col = True
+
+        if ((self.x <= corners[2][0] and corners[2][0] <= self.x + self.WIDTH) and
+            (self.y <= corners[2][1] and corners[2][1] <= self.y + self.TALLNESS)):
+            side = DIR.down_left
+            col = True
+
+        if ((self.x <= corners[3][0] and corners[3][0] <= self.x + self.WIDTH) and
+            (self.y <= corners[3][1] and corners[3][1] <= self.y + self.TALLNESS)):
+            side = DIR.down_right 
+            col = True
+
+        return col, side
