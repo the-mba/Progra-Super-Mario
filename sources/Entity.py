@@ -49,7 +49,7 @@ class Entity:
     def height(self) -> float:
         return max(0, FLOOR_HEIGHT - self.TALLNESS - self.y)
     
-    def dir(self) -> DIR:
+    """ def dir(self) -> DIR:
         vel_x = self.vel_x
         vel_y = self.vel_y
         dir = None
@@ -76,30 +76,32 @@ class Entity:
             else:
                 dir = DIR.up_left
         
-        return dir
+        return dir """
 
-    
-
-    def collides(self, corners) -> DIR:
-        side = DIR.none
+    def collides(self, corners) -> tuple:
+        col, side = False, DIR.none
 
         if ((self.x <= corners[0][0] and corners[0][0] <= self.x + self.WIDTH) and 
             (self.y <= corners[0][1] and corners[0][1] <= self.y + self.TALLNESS)):
             side = DIR.up_left
+            col = True
 
         if ((self.x <= corners[1][0] and corners[1][0] <= self.x + self.WIDTH) and
             (self.y <= corners[1][1] and corners[1][1] <= self.y + self.TALLNESS)):
             side = DIR.up_right
+            col = True
 
         if ((self.x <= corners[2][0] and corners[2][0] <= self.x + self.WIDTH) and
             (self.y <= corners[2][1] and corners[2][1] <= self.y + self.TALLNESS)):
             side = DIR.down_left
+            col = True
 
         if ((self.x <= corners[3][0] and corners[3][0] <= self.x + self.WIDTH) and
             (self.y <= corners[3][1] and corners[3][1] <= self.y + self.TALLNESS)):
             side = DIR.down_right 
+            col = True
 
-        return side         
+        return col, side         
         
     def corners(self) -> tuple:
         return ((self.x, self.y), (self.x + self.WIDTH, self.y), (self.x, self.y + self.TALLNESS), (self.x + self.WIDTH, self.y + self.TALLNESS))
@@ -108,8 +110,11 @@ class Entity:
 class Block(Entity):
     def update(self, game) -> None:
         super().update(game)
-        if self.#####DEPRECATED: collides(game.mario.corners()):
+        col, side = self.collides(game.mario.corners())
+        if col:
             print("COLLISION DETECTED!!!")
+        else:
+            print("Not anymore")
 
         """col_dir = self.collides(game.mario.corners())
         con_1 = col_dir != DIR.none
@@ -160,10 +165,12 @@ class Mushroom(Entity):
     def update(self, game) -> None:
         super().update(game)
 
-        col_dir = self.#####DEPRECATED: collides(game.mario.corners())
-        con_1 = col_dir != DIR.none
+        col, side = self.collides(game.mario.corners())
+        if col:
+            print("COLLISION DETECTED!!!")
+        con_1 = side != DIR.none
         if con_1:
-            print(col_dir.value, DIR.up.value, np.dot(col_dir.value, DIR.up.value))
+            print(side.value, DIR.up.value, np.dot(side.value, DIR.up.value))
         con_2 = True
         if con_1 and con_2:
             pass
