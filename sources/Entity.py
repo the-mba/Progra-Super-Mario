@@ -78,7 +78,7 @@ class Entity:
         
         return dir
 
-
+    
 
     def collides(self, corners) -> DIR:
         side = DIR.none
