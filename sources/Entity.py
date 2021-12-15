@@ -49,34 +49,7 @@ class Entity:
     def height(self) -> float:
         return max(0, FLOOR_HEIGHT - self.TALLNESS - self.y)
     
-    """ def dir(self) -> DIR:
-        vel_x = self.vel_x
-        vel_y = self.vel_y
-        dir = None
-
-        if vel_x > 0:
-            if vel_y > 0:
-                dir = DIR.down_right
-            elif vel_y == 0:
-                dir = DIR.right
-            else:
-                dir = DIR.up_right
-        elif vel_x == 0:
-            if vel_y > 0:
-                dir = DIR.down
-            elif vel_y == 0:
-                dir = DIR.none
-            else:
-                dir = DIR.up
-        else:
-            if vel_y > 0:
-                dir = DIR.down_left
-            elif vel_y == 0:
-                dir = DIR.left
-            else:
-                dir = DIR.up_left
-        
-        return dir """
+    
 
     def collides(self, corners) -> tuple:
         col, side = False, DIR.none
@@ -110,8 +83,35 @@ class Entity:
 class Block(Entity):
     def update(self, game) -> None:
         super().update(game)
-        col, side = self.collides(game.mario.corners())
-        if col:
+        side = DIR.none
+        if ((self.x <= corners[0][0] and corners[0][0] <= self.x + self.WIDTH) and 
+            (self.y <= corners[0][1] and corners[0][1] <= self.y + self.TALLNESS)):
+            p = game.mario.rect_func(self.x)
+            p_inv = game.mario.rect_func_inv(self.y) + game.mario.WIDTH
+            if self.y <= p and p <= self.y + self.TALLNESS:
+                side = DIR.right
+            elif self.x <= p_inv and p_inv <= self.x + self.WIDTH:
+                side = DIR.down
+            elif 
+
+        if ((self.x <= corners[1][0] and corners[1][0] <= self.x + self.WIDTH) and
+            (self.y <= corners[1][1] and corners[1][1] <= self.y + self.TALLNESS)):
+            p = game.mario.rect_func(self.x - self.WIDTH)
+            if self.y <= p and p <= self.y + self.TALLNESS:
+                side = DIR.right
+            p_inv = game.mario.rect_func_inv(self.y) + game.mario.WIDTH
+            if self.x <= p_inv and p_inv <= self.x + self.WIDTH:
+                side = DIR.down
+
+
+
+        if ((self.x <= corners[2][0] and corners[2][0] <= self.x + self.WIDTH) and
+            (self.y <= corners[2][1] and corners[2][1] <= self.y + self.TALLNESS)):
+            side = DIR.down_left
+
+        if ((self.x <= corners[3][0] and corners[3][0] <= self.x + self.WIDTH) and
+            (self.y <= corners[3][1] and corners[3][1] <= self.y + self.TALLNESS)):
+            side = DIR.down_right
             print("COLLISION DETECTED!!!")
         else:
             print("Not anymore")
@@ -124,6 +124,14 @@ class Block(Entity):
         if con_1 and con_2:
             self.destroy(game)"""  # THIS WHOLE THING IS KINDA BS, NEEDS A REWRITE !!!
     
+    def rect_func(self, x) -> float:
+        p = (self.y - self.prev_y) / (self.x - self.prev_x)
+        return self.prev_y + p * (x - self.prev_x)
+    
+    def rect_func_inv(self, y) -> float:
+        p = (self.x - self.prev_x) / (self.y - self.prev_y)
+        return self.prev_x + p * (y - self.prev_y)
+
     def destroy(self, game):
         game.solids.list[1].list.remove(self)
         game.mario.prev_y = game.mario.y
@@ -176,3 +184,42 @@ class Mushroom(Entity):
             pass
         pyxel.quit()
         print("EEEEEEEEEE" * 10000)
+
+
+
+
+
+
+
+
+
+
+
+        s = """ def dir(self) -> DIR:
+        vel_x = self.vel_x
+        vel_y = self.vel_y
+        dir = None
+
+        if vel_x > 0:
+            if vel_y > 0:
+                dir = DIR.down_right
+            elif vel_y == 0:
+                dir = DIR.right
+            else:
+                dir = DIR.up_right
+        elif vel_x == 0:
+            if vel_y > 0:
+                dir = DIR.down
+            elif vel_y == 0:
+                dir = DIR.none
+            else:
+                dir = DIR.up
+        else:
+            if vel_y > 0:
+                dir = DIR.down_left
+            elif vel_y == 0:
+                dir = DIR.left
+            else:
+                dir = DIR.up_left
+        
+        return dir """
