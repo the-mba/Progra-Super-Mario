@@ -6,7 +6,8 @@ class My_Collection:
         self.list = []
         if len(element_types) == 1:
             self.element_type = element_types[0]
-            self.news(exec("STARTING_" + self.element_type.__name__.upper() + "S"))
+            if self.element_type.__name__ != "Part":
+                self.news(eval("STARTING_" + self.element_type.__name__.upper() + "S"))
         else:
             for element_type in element_types:
                 self.list.append(self.__class__(element_type))
@@ -24,11 +25,17 @@ class My_Collection:
         self.list.append(new_element)
         return new_element
     
-    def news(self, POS_AND_OR_VEL):
-        for i, element in enumerate(POS_AND_OR_VEL):
-            self.new(
-                BLOCK_TYPES[self.element_type.__name__.lower()],
-                element[0], element[1],
-                element[2] if len(element) > 2 else 0,
-                element[3] if len(element) > 3 else 0)
+    def news(self, PARAMETERS):
+        for i, element in enumerate(PARAMETERS):
+            if self.element_type.__name__ == "Pipe":
+                self.new(
+                    BLOCK_TYPES[self.element_type.__name__.lower()],
+                    element[0], element[1], 0, 0, element[2]
+                )
+            else:
+                self.new(
+                    BLOCK_TYPES[self.element_type.__name__.lower()],
+                    element[0], element[1],
+                    element[2] if len(element) > 2 else 0,
+                    element[3] if len(element) > 3 else 0)
 

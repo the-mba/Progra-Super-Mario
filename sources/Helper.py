@@ -1,7 +1,7 @@
 import math, enum
 
 DEBUG = True
-OFFSET = -0 if DEBUG else 0
+OFFSET = -12 if DEBUG else 0
 
 # Background
 GAME_WIDTH = 256
@@ -33,10 +33,21 @@ POS_COINS = 0.3
 POS_WORLD = 0.6
 POS_TIME = 0.8
 
-STARTING_GOOMBAS = [(20, 20), (40, 40)]
+STARTING_GOOMBAS = [
+    (42*8,      144 + OFFSET),
+    (76 * 8,    144 + OFFSET),
+    (106 * 8,   144 + OFFSET),
+    (110 * 8,   144 + OFFSET)
+]
 
-STARTING_BRICKS = []
-STARTING_PIPES = [] 
+# EL TILEMAP de altura 84 SE QUEDA EN EL PIXEL de altura 80 !!!
+STARTING_BLOCKS = []  # must delete, block is an abstract class
+STARTING_DECORS = []
+STARTING_PIPES = [(56*8 + OFFSET,   80 + 3 * 16,    2),
+                  (72*8 + OFFSET,   80 + 1 * 16,    4),
+                  (96*8 + OFFSET,   80 - 8,       5.5),
+                  (120*8 + OFFSET,  80 - 8,       5.5)
+] # (x, y, tallness): where tallness can be 0.5, 1.5, etc.
 
 class DIR(enum.Enum):
     r = math.sqrt(2) / 2

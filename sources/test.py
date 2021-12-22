@@ -13,6 +13,8 @@ print(vel_x_post)
 TESTED AND OK!!  """
 
 l = [1, 2, 3, 4, 55]
-print(zip(l))
+print(tuple(zip(l)))
 
 B_T["goomba"]
+
+print(exec("STARTING_" + "GOOMBA" + "S"))
