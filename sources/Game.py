@@ -57,9 +57,8 @@ class Game:
         if pyxel.btnp(pyxel.KEY_Q):
             pyxel.quit()
 
-        # advance background and move back Mario
-        if self.mario.update(self.x):
-            self.x += BACKGROUND_SPEED
+        # update mario returns the extra x
+        self.x += self.mario.update(self)
         
         self.solids.update(self)
 

@@ -34,3 +34,5 @@ vel_x_prev = -5555.0
 vel_x_post = ( abs(vel_x_prev) + MARIO_AIR_FRICTION ) * abs(vel_x_prev) / vel_x_prev if vel_x_prev != 0 else 0
 print(vel_x_post)
 TESTED AND OK!!  """
+
+e = Entity()

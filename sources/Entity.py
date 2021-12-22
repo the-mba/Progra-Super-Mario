@@ -9,11 +9,11 @@ class Entity:
         self.BLOCK_TYPE = BLOCK_TYPE
         self.FALLS = FALLS
         
-        self.x = STARTING_X
-        self.y = STARTING_Y
+        self._x = STARTING_X
+        self._y = STARTING_Y
 
-        self.prev_x = self.x
-        self.prev_y = self.y
+        self.x_prev = self.x
+        self.y_prev = self.y
         
 
         self.vel_x = STARTING_VEL_X
@@ -23,10 +23,27 @@ class Entity:
 
         self.PERSISTENT = PERSISTENT
         self.alive = True
+    
+    @property
+    def x(self):
+        return self._x
+    @x.setter
+    def x(self, value):
+        self.x_prev = self._x
+        self._x = value
+    
+    @property
+    def y(self):
+        return self._y
+    @y.setter
+    def y(self, value):
+        self.y_prev = self._y
+        self._y = value
 
-    # Only call super().update(game) on Solids that can move
+    # Only call super().update(game) on Entities that can move
     def update(self, game) -> None:
-        self.prev_y = self.y
+        # X-movement
+        self.x += self.vel_x
         # Y-movement and gravity
         self.y = min(self.y + self.vel_y, FLOOR_HEIGHT - self.TALLNESS)
         if self.FALLS and self.height():
@@ -34,9 +51,16 @@ class Entity:
         else:
             self.vel_y = 0
         
-        self.prev_x = self.x
-        self.x += self.vel_x
+        # X-AXIS air friction, so velocity reduces naturally
+        if self.vel_x != 0:
+            vel_x_prev_abs = abs( self.vel_x )
+            vel_x_post_abs = vel_x_prev_abs + MARIO_AIR_FRICTION
 
+            if vel_x_post_abs > 0:
+                self.vel_x = (vel_x_post_abs) * abs(self.vel_x) / self.vel_x
+            else:
+                self.vel_x = 0
+    
     def draw(self, game) -> None:
         pyxel.blt(
             self.x - game.x * 8,
@@ -59,21 +83,20 @@ class Entity:
         return ((self.x, self.y), (self.x + self.WIDTH, self.y), (self.x, self.y + self.TALLNESS), (self.x + self.WIDTH, self.y + self.TALLNESS))
     
     def rect_func(self, x) -> float:
-        p = (self.y - self.prev_y) / (self.x - self.prev_x)
-        return self.prev_y + p * (x - self.prev_x)
+        p = (self.y - self.y_prev) / (self.x - self.x_prev)
+        return self.y_prev + p * (x - self.x_prev)
     
     def rect_func_inv(self, y) -> float:
-        p = (self.x - self.prev_x) / (self.y - self.prev_y)
-        return self.prev_x + p * (y - self.prev_y)
+        p = (self.x - self.x_prev) / (self.y - self.y_prev)
+        return self.x_prev + p * (y - self.y_prev)
 
 
 class Block(Entity):
     def update(self, game) -> None:
-        super().update(game)
         corners = game.mario.corners()
         side = DIR.none
         a = game.mario.angle()
-        print("Mario's angle is: ", a)
+        #print("Mario's angle is: ", a)
         if ((self.x <= corners[0][0] and corners[0][0] <= self.x + self.WIDTH) and 
             (self.y <= corners[0][1] and corners[0][1] <= self.y + self.TALLNESS)):
             if abs(a - math.radians(90)) < 10 ^(-3):
@@ -149,7 +172,7 @@ class Block(Entity):
         if side != DIR.none:
             print("COLLISION DETECTED!!! from", side.name)
         else:
-            print("Not anymore")
+            pass #print("Not anymore")
 
         """col_dir = self.collides(game.mario.corners())
         con_1 = col_dir != DIR.none
@@ -158,6 +181,8 @@ class Block(Entity):
         con_2 = np.dot(col_dir.value, DIR.up.value) > np.cos(math.radians(45))
         if con_1 and con_2:
             self.destroy(game)"""  # THIS WHOLE THING IS KINDA BS, NEEDS A REWRITE !!!
+        
+        super().update(game)
 
     def destroy(self, game):
         game.solids.list[1].list.remove(self)
@@ -198,7 +223,6 @@ class Decor(Entity):
 
 class Mushroom(Entity):
     def update(self, game) -> None:
-        super().update(game)
 
         col, side = self.collides(game.mario.corners())
         if col:
@@ -250,6 +274,8 @@ class Mushroom(Entity):
                 dir = DIR.up_left
         
         return dir """
+
+        super().update(game)
     
 def collides(self, corners) -> tuple:
         col, side = False, DIR.none

@@ -13,44 +13,31 @@ class Mario(Entity):
         self.time = 0
         self.jumps_pending = 0
 
-    def update(self, level_x) -> bool: # returns True if the Mario moves and the Background has to move
-        super().update(level_x)
-        
-        move_right = False
+    def update(self, game) -> bool: # returns True if the Mario moves and the Background has to move
+        move_right = 0
 
         # RIGHT
         if pyxel.btnp(pyxel.KEY_RIGHT, 1, 1):
             self.vel_x = MARIO_CONSTANT_VEL_X
-            if self.x >= level_x + BACKGROUND_RIGHT_MOVEMENT_THRESHOLD:
-                self.x = level_x + BACKGROUND_RIGHT_MOVEMENT_THRESHOLD + 8
-            move_right = True
+            delta = self.x + self.vel_x - game.x - BACKGROUND_RIGHT_MOVEMENT_THRESHOLD
+            if delta > 0:
+                self.x = game.x + BACKGROUND_RIGHT_MOVEMENT_THRESHOLD
+                move_right = delta
         
         # LEFT
         if pyxel.btnp(pyxel.KEY_LEFT, 1, 1):
             self.vel_x = -MARIO_CONSTANT_VEL_X
-            self.x = max(self.x + self.vel_x, level_x)
-
-        if self.vel_x != 0:
-            vel_x_prev = self.vel_x
-            vel_x_prev_abs = abs( vel_x_prev )
-
-            vel_x_post_abs = max ( vel_x_prev_abs + MARIO_AIR_FRICTION, 0 )
-            if vel_x_prev_abs > -MARIO_AIR_FRICTION:
-                vel_x_post_abs = vel_x_prev_abs + MARIO_AIR_FRICTION
-                vel_x_post = vel_x_post_abs * abs(vel_x_prev) / vel_x_prev
-            else:
-                vel_x_post = 0
-            self.vel_x = vel_x_post
+            self.x = max(self.x + self.vel_x, game.x)
         
-        # This could be moved to a method, like apply_vels(self)
-        self.x += self.vel_x
-
         # JUMP, a starting speed and then gravity
         if pyxel.btnp(pyxel.KEY_UP):
             if self.height() == 0:
-                self.vel_y -= MARIO_JUMPING_INITIAL_SPEED
+                self.vel_y -= MARIO_JUMPING_INITIAL_SPEED  
 
-        return move_right and self.x >= level_x + BACKGROUND_RIGHT_MOVEMENT_THRESHOLD
+        
+        super().update(game)     
+
+        return move_right
     
     
     
