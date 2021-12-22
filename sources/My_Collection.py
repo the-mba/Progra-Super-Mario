@@ -24,7 +24,11 @@ class My_Collection:
         return new_element
     
     def news(self, BLOCK_TYPE, POS, VEL=[]):
-        for i, element in zip(POS):
-            new_element = self.element_type(BLOCK_TYPE, element[0], element[1], VEL[])
+        for i, element in enumerate(POS):
+            new_element = self.element_type(
+                BLOCK_TYPE,
+                element[0], element[1],
+                VEL[i][0] if VEL != [] else 0,
+                VEL[i][1] if VEL != [] else 0)
             self.list.append(new_element)
 

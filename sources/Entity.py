@@ -5,6 +5,7 @@ from Helper import *
 from My_Collection import My_Collection
 
 class Entity:
+    DICT_OF_BLOCK_TYPES = {Block: BLOCK_TYPES.brick}
     def __init__(self, BLOCK_TYPE, STARTING_X, STARTING_Y, STARTING_VEL_X=0, STARTING_VEL_Y=0, HEIGHT=1, FALLS=False, PERSISTENT=False) -> None:
         self.BLOCK_TYPE = BLOCK_TYPE
         self.FALLS = FALLS
@@ -191,14 +192,6 @@ class Block(Entity):
         game.mario.vel_y = 0
 
 
-class Enemy(Entity):
-    pass
-
-
-class Goomba(Enemy):
-    pass
-
-
 class Pipe(Entity):
     def __init__(self, BLOCK_TYPE, STARTING_X, STARTING_Y, STARTING_VEL_X, STARTING_VEL_Y, HEIGHT=2, FALLS=False, PERSISTENT=False) -> None:
         self.parts = My_Collection(Pipe.Part)
@@ -219,6 +212,14 @@ class Pipe(Entity):
         pass
 
 class Decor(Entity):
+    pass
+
+
+class Enemy(Entity):
+    pass
+
+
+class Goomba(Enemy):
     pass
 
 class Mushroom(Entity):

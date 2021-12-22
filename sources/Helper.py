@@ -33,6 +33,8 @@ POS_COINS = 0.3
 POS_WORLD = 0.6
 POS_TIME = 0.8
 
+STARTING_GOOMBAS = [(20, 20)]
+
 
 class DIR(enum.Enum):
     r = math.sqrt(2) / 2
@@ -70,6 +72,7 @@ class BLOCK_TYPES(enum.Enum):
     half_pipe_body = (32, 16, 32, 8)
 
     cloud = (16, 64, 3 *16, 1.5 *16)
+
 
 class EFECTS(enum.Enum):
     Super = 1
