@@ -58,7 +58,7 @@ class Game:
             pyxel.quit()
 
         # advance background and move back Mario
-        if self.mario.update(self.x * 8):
+        if self.mario.update(self.x):
             self.x += BACKGROUND_SPEED
         
         self.solids.update(self)

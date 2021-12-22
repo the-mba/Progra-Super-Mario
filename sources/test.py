@@ -26,6 +26,11 @@ def collides(self, corners) -> DIR:
 E = Entity(B_T.goomba, 42 * 8, 144, 0, 0)
 F = Entity(B_T.goomba, 42 * 8 - OFFSET, 144 + OFFSET, 0, 0)
 
-print(  E.#####DEPRECATED: collides( F.corners() )  )
+print(  )#####DEPRECATED: collides( F.corners() )  )
 
 
+""" MARIO_AIR_FRICTION = -1
+vel_x_prev = -5555.0
+vel_x_post = ( abs(vel_x_prev) + MARIO_AIR_FRICTION ) * abs(vel_x_prev) / vel_x_prev if vel_x_prev != 0 else 0
+print(vel_x_post)
+TESTED AND OK!!  """

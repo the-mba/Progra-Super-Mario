@@ -21,18 +21,29 @@ class Mario(Entity):
         # RIGHT
         if pyxel.btnp(pyxel.KEY_RIGHT, 1, 1):
             self.vel_x = MARIO_CONSTANT_VEL_X
-            self.x += self.vel_x
             if self.x >= level_x + BACKGROUND_RIGHT_MOVEMENT_THRESHOLD:
                 self.x = level_x + BACKGROUND_RIGHT_MOVEMENT_THRESHOLD + 8
             move_right = True
-        else:
-            self.vel_x = 0
+        
         # LEFT
         if pyxel.btnp(pyxel.KEY_LEFT, 1, 1):
             self.vel_x = -MARIO_CONSTANT_VEL_X
             self.x = max(self.x + self.vel_x, level_x)
-        else:
-            self.vel_x = 0
+
+        if self.vel_x != 0:
+            vel_x_prev = self.vel_x
+            vel_x_prev_abs = abs( vel_x_prev )
+
+            vel_x_post_abs = max ( vel_x_prev_abs + MARIO_AIR_FRICTION, 0 )
+            if vel_x_prev_abs > -MARIO_AIR_FRICTION:
+                vel_x_post_abs = vel_x_prev_abs + MARIO_AIR_FRICTION
+                vel_x_post = vel_x_post_abs * abs(vel_x_prev) / vel_x_prev
+            else:
+                vel_x_post = 0
+            self.vel_x = vel_x_post
+        
+        # This could be moved to a method, like apply_vels(self)
+        self.x += self.vel_x
 
         # JUMP, a starting speed and then gravity
         if pyxel.btnp(pyxel.KEY_UP):
