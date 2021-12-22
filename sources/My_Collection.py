@@ -18,11 +18,13 @@ class My_Collection:
         for element in self.list:                
             element.draw(game)
 
-    def new(self, BLOCK_TYPE, STARTING_X, STARTING_Y,  STARTING_VEL_X, STARTING_VEL_Y, HEIGHT=1, PERSISTENT=False):
-        if self.element_type == type(self):
-            for block_type in BLOCK_TYPE:
-                self.list.append(self.__class__(block_type))
-        else:
-            new_element = self.element_type(BLOCK_TYPE, STARTING_X, STARTING_Y,  STARTING_VEL_X, STARTING_VEL_Y, HEIGHT, PERSISTENT)
+    def new(self, BLOCK_TYPE, STARTING_X, STARTING_Y,  STARTING_VEL_X=0, STARTING_VEL_Y=0, HEIGHT=1, PERSISTENT=False):
+        new_element = self.element_type(BLOCK_TYPE, STARTING_X, STARTING_Y,  STARTING_VEL_X, STARTING_VEL_Y, HEIGHT, PERSISTENT)
+        self.list.append(new_element)
+        return new_element
+    
+    def news(self, BLOCK_TYPE, POS, VEL=[]):
+        for i, element in zip(POS):
+            new_element = self.element_type(BLOCK_TYPE, element[0], element[1], VEL[])
             self.list.append(new_element)
-            return new_element
+

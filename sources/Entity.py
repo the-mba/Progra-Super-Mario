@@ -5,7 +5,7 @@ from Helper import *
 from My_Collection import My_Collection
 
 class Entity:
-    def __init__(self, BLOCK_TYPE, STARTING_X, STARTING_Y, STARTING_VEL_X, STARTING_VEL_Y, HEIGHT=1, FALLS=False, PERSISTENT=False) -> None:
+    def __init__(self, BLOCK_TYPE, STARTING_X, STARTING_Y, STARTING_VEL_X=0, STARTING_VEL_Y=0, HEIGHT=1, FALLS=False, PERSISTENT=False) -> None:
         self.BLOCK_TYPE = BLOCK_TYPE
         self.FALLS = FALLS
         
