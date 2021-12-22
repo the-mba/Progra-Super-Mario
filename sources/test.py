@@ -14,3 +14,5 @@ TESTED AND OK!!  """
 
 l = [1, 2, 3, 4, 55]
 print(zip(l))
+
+B_T["goomba"]

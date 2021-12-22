@@ -20,7 +20,7 @@ class Game:
         self.solids = My_Collection(Goomba, Block, Pipe, Decor)
 
         self.goombas, self.blocks, self.pipes, self.decors = self.solids.list
-        self.goombas.news(B_T.goomba, STARTING_GOOMBAS)
+        self.goombas.news(STARTING_GOOMBAS)
         self.goombas.new(B_T.goomba, 42 * 8, 144 + OFFSET, 3, 0)
 
         self.blocks.new(B_T.brick, 39 * 8, 80 + OFFSET,  0, 0)

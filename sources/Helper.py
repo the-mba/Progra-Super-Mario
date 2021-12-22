@@ -33,8 +33,10 @@ POS_COINS = 0.3
 POS_WORLD = 0.6
 POS_TIME = 0.8
 
-STARTING_GOOMBAS = [(20, 20)]
+STARTING_GOOMBAS = [(20, 20), (40, 40)]
 
+STARTING_BRICKS = []
+STARTING_PIPES = [] 
 
 class DIR(enum.Enum):
     r = math.sqrt(2) / 2
