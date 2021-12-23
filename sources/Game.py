@@ -17,8 +17,9 @@ class Game:
         self.x = 0
         self.gui = GUI()
         self.mario = Mario()
-        self.solids = My_Collection(Goomba, Block, Pipe, Decor)
+        self.solids = My_Collection(Goomba, My_Collection(Brick, Brick_Question, Brick_Clear), Pipe, Decor)
         self.goombas, self.blocks, self.pipes, self.decors = self.solids.list
+        self.bricks, self.question_bricks, self.clear_bricks = self.blocks.list
 
         self.blocks.new(B_T.brick, 39 * 8, 80 + OFFSET,  0, 0)
         self.blocks.new(B_T.brick_question, 41 * 8, 80 + OFFSET, 0, 0)

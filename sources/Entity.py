@@ -191,6 +191,17 @@ class Block(Entity):
         game.mario.vel_y = 0
 
 
+class Brick(Block):
+    pass
+
+
+class Question_Brick(Block):
+    pass
+
+class Clear_Brick(Block):
+    pass
+
+
 class Pipe(Entity):
     def __init__(self, BLOCK_TYPE, STARTING_X, STARTING_Y, STARTING_VEL_X, STARTING_VEL_Y, HEIGHT=2, FALLS=False, PERSISTENT=False) -> None:
         self.parts = My_Collection(Pipe.Part)

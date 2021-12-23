@@ -75,7 +75,7 @@ class BLOCK_TYPES(enum.Enum):
 
     brick = (0, 16, 16, 16)
     brick_clear = (16, 16, 16, 16)
-    brick_question = (16, 0, 16, 16)
+    question_brick = (16, 0, 16, 16)
 
     goomba = (32, 48, 16, 16)
 
