@@ -17,21 +17,21 @@ class Game:
         self.x = 0
         self.gui = GUI()
         self.mario = Mario()
-        self.solids = My_Collection(Goomba, My_Collection(Brick, Brick_Question, Brick_Clear), Pipe, Decor)
+        self.solids = My_Collection(Goomba, My_Collection(Brick, Question_Brick, Clear_Brick), Pipe, Decor)
         self.goombas, self.blocks, self.pipes, self.decors = self.solids.list
         self.bricks, self.question_bricks, self.clear_bricks = self.blocks.list
 
-        self.blocks.new(B_T.brick, 39 * 8, 80 + OFFSET,  0, 0)
-        self.blocks.new(B_T.brick_question, 41 * 8, 80 + OFFSET, 0, 0)
-        self.blocks.new(B_T.brick, 43 * 8, 80 + OFFSET,  0, 0)
-        self.blocks.new(B_T.brick_question, 45 * 8, 80 + OFFSET, 0, 0)
-        self.blocks.new(B_T.brick, 47 * 8, 80 + OFFSET,  0, 0) # EL TILEMAP de altura 84 SE QUEDA EN EL PIXEL de altura 80 !!!
+        self.bricks.new(B_T.brick, 39 * 8, 80 + OFFSET,  0, 0)
+        self.question_bricks.new(B_T.question_brick, 41 * 8, 80 + OFFSET, 0, 0)
+        self.bricks.new(B_T.brick, 43 * 8, 80 + OFFSET,  0, 0)
+        self.question_bricks.new(B_T.question_brick, 45 * 8, 80 + OFFSET, 0, 0)
+        self.bricks.new(B_T.brick, 47 * 8, 80 + OFFSET,  0, 0) # EL TILEMAP de altura 84 SE QUEDA EN EL PIXEL de altura 80 !!!
 
-        self.blocks.new(B_T.brick, 146 * 8, 80 + 1*16 + OFFSET,  0, 0)
-        self.blocks.new(B_T.brick_question, 148 * 8, 80 + 1*16 + OFFSET, 0, 0)
-        self.blocks.new(B_T.brick, 150 * 8, 80 + 1*16 + OFFSET,  0, 0)
+        self.bricks.new(B_T.brick, 146 * 8, 80 + 1*16 + OFFSET,  0, 0)
+        self.question_bricks.new(B_T.question_brick, 148 * 8, 80 + 1*16 + OFFSET, 0, 0)
+        self.bricks.new(B_T.brick, 150 * 8, 80 + 1*16 + OFFSET,  0, 0)
 
-        self.blocks.new(B_T.brick_clear, 140 * 8, 144 + OFFSET, 0, 0)
+        self.clear_bricks.new(B_T.brick_clear, 140 * 8, 144 + OFFSET, 0, 0)
 
         self.decors.new(B_T.cloud, 30, 88, 0, 0)
 

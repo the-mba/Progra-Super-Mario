@@ -5,12 +5,16 @@ class My_Collection:
     def __init__(self, *element_types) -> None:
         self.list = []
         if len(element_types) == 1:
+            print(element_types)
             self.element_type = element_types[0]
             if self.element_type.__name__ != "Part":
                 self.news(eval("STARTING_" + self.element_type.__name__.upper() + "S"))
         else:
-            for element_type in element_types:
-                self.list.append(self.__class__(element_type))
+            for element in element_types:
+                if element.__class__ == self.__class__:
+                    self.list.append(element)
+                else:
+                    self.list.append(self.__class__(element))
     
     def update(self, game) -> None:
         for element in self.list:

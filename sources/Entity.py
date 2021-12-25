@@ -12,8 +12,8 @@ class Entity:
         self._x = STARTING_X
         self._y = STARTING_Y
 
-        self.x_prev = self.x
-        self.y_prev = self.y
+        self._x_prev = self.x
+        self._y_prev = self.y
         
 
         self.vel_x = STARTING_VEL_X
@@ -29,7 +29,7 @@ class Entity:
         return self._x
     @x.setter
     def x(self, value):
-        self.x_prev = self._x
+        self._x_prev = self._x
         self._x = value
     
     @property
@@ -37,7 +37,7 @@ class Entity:
         return self._y
     @y.setter
     def y(self, value):
-        self.y_prev = self._y
+        self._y_prev = self._y
         self._y = value
 
     # Only call super().update(game) on Entities that can move
@@ -63,7 +63,7 @@ class Entity:
     
     def draw(self, game) -> None:
         pyxel.blt(
-            self.x - game.x * 8,
+            self.x - game.x,
             self.y,
             0, # image map that we want to use
             self.SPRITE_X,
@@ -83,12 +83,12 @@ class Entity:
         return ((self.x, self.y), (self.x + self.WIDTH, self.y), (self.x, self.y + self.TALLNESS), (self.x + self.WIDTH, self.y + self.TALLNESS))
     
     def rect_func(self, x) -> float:
-        p = (self.y - self.y_prev) / (self.x - self.x_prev)
-        return self.y_prev + p * (x - self.x_prev)
+        p = (self.y - self._y_prev) / (self.x - self._x_prev)
+        return self._y_prev + p * (x - self._x_prev)
     
     def rect_func_inv(self, y) -> float:
-        p = (self.x - self.x_prev) / (self.y - self.y_prev)
-        return self.x_prev + p * (y - self.y_prev)
+        p = (self.x - self._x_prev) / (self.y - self._y_prev)
+        return self._x_prev + p * (y - self._y_prev)
 
 
 class Block(Entity):

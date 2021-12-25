@@ -42,6 +42,9 @@ STARTING_GOOMBAS = [
 
 # EL TILEMAP de altura 84 SE QUEDA EN EL PIXEL de altura 80 !!!
 STARTING_BLOCKS = []  # must delete, block is an abstract class
+STARTING_BRICKS = []
+STARTING_QUESTION_BRICKS = []
+STARTING_CLEAR_BRICKS = []
 STARTING_DECORS = []
 STARTING_PIPES = [(56*8 + OFFSET,   80 + 3 * 16,    2),
                   (72*8 + OFFSET,   80 + 1 * 16,    4),
