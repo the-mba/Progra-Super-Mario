@@ -38,20 +38,20 @@ class Entity:
     @y.setter
     def y(self, value):
         self._y_prev = self._y
-        self._y = value
+        self._y = min(value, FLOOR_HEIGHT - self.TALLNESS)
 
     # Only call super().update(game) on Entities that can move
     def update(self, game) -> None:
         # X-movement
         self.x += self.vel_x
         # Y-movement and gravity
-        self.y = min(self.y + self.vel_y, FLOOR_HEIGHT - self.TALLNESS)
+        self.y += self.vel_y
         if self.FALLS and self.height():
             self.vel_y += GRAVITY
         else:
             self.vel_y = 0
         
-        # X-AXIS air friction, so velocity reduces naturally
+        """# X-AXIS air friction, so velocity reduces naturally
         if self.vel_x != 0:
             vel_x_prev_abs = abs( self.vel_x )
             vel_x_post_abs = vel_x_prev_abs + MARIO_AIR_FRICTION
@@ -59,7 +59,7 @@ class Entity:
             if vel_x_post_abs > 0:
                 self.vel_x = (vel_x_post_abs) * abs(self.vel_x) / self.vel_x
             else:
-                self.vel_x = 0
+                self.vel_x = 0"""
     
     def draw(self, game) -> None:
         pyxel.blt(

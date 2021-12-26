@@ -14,6 +14,10 @@ class GUI:
         #draw coin
         pyxel.blt(GAME_WIDTH * POS_COINS - 8 - 2, 4, 0, 48, 104, 8, 8, 7) # -8 is the coind GAME_WIDTH, -2 is some spacing
 
+
+
+        pyxel.text(GAME_WIDTH * 0.6, 80, str(game.mario.x), 1)
+
         # draw texts
         name_str = "MARIO"
         pyxel.text(GAME_WIDTH * POS_POINTS, 4, name_str, 1)
@@ -49,6 +53,6 @@ class GUI:
             pyxel.cls(12)
 
             # draw tilemap
-            pyxel.bltm(0 + game.x % 8, 0, 0, game.x // 8, 74, 128, 128)
+            pyxel.bltm(- (game.x % 8), 0, 0, game.x // 8, 74, 128, 128)
 
             # pyxel.bltm(0, 0, 0, game.x % 256 - 256, 74, 128, 128) # TODO: remove this and convert all coordinates to modulo 256 so that the whole game can infinitely repeat to the right
