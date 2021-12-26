@@ -51,6 +51,7 @@ class Entity:
         else:
             self.vel_y = 0
         
+        self.vel_x = 0
         """# X-AXIS air friction, so velocity reduces naturally
         if self.vel_x != 0:
             vel_x_prev_abs = abs( self.vel_x )

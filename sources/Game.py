@@ -46,6 +46,7 @@ class Game:  # y si la instancia de Game la movemos a Helper o algo así (como c
 
         # update mario returns the extra x
         self.x += self.mario.update()
+        self.mario.x += 1
         
         self.solids.update(self)
 

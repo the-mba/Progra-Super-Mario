@@ -20,7 +20,7 @@ class Mario(Entity):
     @x.setter
     def x(self, value):
         self._x_prev = self._x
-        self._x = int(min( max(value, self.game.x), self.game.x + BACKGROUND_RIGHT_MOVEMENT_THRESHOLD ))
+        self._x = min( max(value, self.game.x), self.game.x + BACKGROUND_RIGHT_MOVEMENT_THRESHOLD )
     
     @property
     def vel_x(self):
@@ -32,17 +32,11 @@ class Mario(Entity):
     def update(self) -> int: # returns True if the Mario moves and the Background has to move
         move_right = 0
 
-        if pyxel.btnp(pyxel.KEY_X):
-            self.x -= 1
-
         # RIGHT
-        if pyxel.btnp(pyxel.KEY_RIGHT):
+        if pyxel.btnp(pyxel.KEY_RIGHT, 1, 1):
             self.vel_x += MARIO_CONSTANT_VEL_X
-            delta = (self.x + self.vel_x) - (self.game.x + BACKGROUND_RIGHT_MOVEMENT_THRESHOLD)
-            if delta >= 0:
-                self.x = self.game.x + BACKGROUND_RIGHT_MOVEMENT_THRESHOLD
-                self.vel_x = 0
-                move_right = delta
+            move_right = max ( (self.x + self.vel_x) - (self.game.x + BACKGROUND_RIGHT_MOVEMENT_THRESHOLD), 0 )
+            print(f'{move_right=}')
         
         # LEFT
         if pyxel.btnp(pyxel.KEY_LEFT, 1, 1):
