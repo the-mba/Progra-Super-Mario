@@ -49,7 +49,6 @@ class GUI:
             pyxel.cls(12)
 
             # draw tilemap
-            pyxel.bltm(0, 0, 0, game.x // 8, 74, 128, 128)
-            print("PRINTING BACKGROUND AT X:", game.x // 8)
+            pyxel.bltm(0 + game.x % 8, 0, 0, game.x // 8, 74, 128, 128)
 
             # pyxel.bltm(0, 0, 0, game.x % 256 - 256, 74, 128, 128) # TODO: remove this and convert all coordinates to modulo 256 so that the whole game can infinitely repeat to the right

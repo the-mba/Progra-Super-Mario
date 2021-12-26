@@ -8,7 +8,7 @@ from Helper import *
 from Helper import BLOCK_TYPES as B_T
 from My_Collection import My_Collection
 
-class Game:
+class Game:  # y si la instancia de Game la movemos a Helper o algo así (como crear un GameAgent que ejecute Game pero que los demas archivos sigan podiendo importar game y no tener que pasarselo como parametro)
     def __init__(self) -> None:
 
         pyxel.init(GAME_WIDTH, GAME_HEIGHT, caption="Pyxel Jump")
@@ -16,7 +16,8 @@ class Game:
 
         self.x = 0
         self.gui = GUI()
-        self.mario = Mario()
+        self.mario = Mario(self)
+        self.mario.game = self  # remove game as an argument for the calls for update and draw of mario and maybe of all other objects
         self.solids = My_Collection(Goomba, My_Collection(Brick, Question_Brick, Clear_Brick), Pipe, Decor)
         self.goombas, self.blocks, self.pipes, self.decors = self.solids.list
         self.bricks, self.question_bricks, self.clear_bricks = self.blocks.list
@@ -44,7 +45,7 @@ class Game:
             pyxel.quit()
 
         # update mario returns the extra x
-        self.x += self.mario.update(self)
+        self.x += 8 * self.mario.update()
         
         self.solids.update(self)
 
