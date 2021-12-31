@@ -1,4 +1,5 @@
-import math, enum
+import math
+from enum import Enum, auto
 
 DEBUG = True
 OFFSET = -12 if DEBUG else 0
@@ -7,7 +8,6 @@ OFFSET = -12 if DEBUG else 0
 GAME_WIDTH = 256
 GAME_HEIGHT = 192
 BACKGROUND_RIGHT_MOVEMENT_THRESHOLD = int (GAME_WIDTH * 0.6)
-BACKGROUND_SPEED = 1
 FLOOR_HEIGHT = GAME_HEIGHT - 32
 
 # Mario's sprite position and size
@@ -17,12 +17,12 @@ MARIO_SPRITE_X = 0
 MARIO_SPRITE_Y = 48
 
 # Mario movement, and derivatives
-MARIO_STARTING_X = 160
+MARIO_STARTING_X = 140
 MARIO_STARTING_Y = FLOOR_HEIGHT - MARIO_TALLNESS  # (192 -32) -16 = 144
 MARIO_STARTING_VEL_Y = 0
-MARIO_CONSTANT_VEL_X = 3
+MARIO_CONSTANT_VEL_X = 5
 MARIO_JUMPING_INITIAL_SPEED = -20
-MARIO_AIR_FRICTION = -4
+MARIO_AIR_FRICTION = -40
 
 # Universal Constant
 GRAVITY = 2
@@ -33,15 +33,15 @@ POS_COINS = 0.3
 POS_WORLD = 0.6
 POS_TIME = 0.8
 
+# STARTING ENTITIES
+# -----------------
+# EL TILEMAP de altura 84 SE QUEDA EN EL PIXEL de altura 80 !!!
 STARTING_GOOMBAS = [
     (42*8,      144 + OFFSET),
     (76 * 8,    144 + OFFSET),
     (106 * 8,   144 + OFFSET),
     (110 * 8,   144 + OFFSET)
 ]
-
-# EL TILEMAP de altura 84 SE QUEDA EN EL PIXEL de altura 80 !!!
-STARTING_BLOCKS = []  # must delete, block is an abstract class
 STARTING_BRICKS = []
 STARTING_QUESTION_BRICKS = []
 STARTING_CLEAR_BRICKS = []
@@ -50,9 +50,9 @@ STARTING_PIPES = [(56*8 + OFFSET,   80 + 3 * 16,    2),
                   (72*8 + OFFSET,   80 + 1 * 16,    4),
                   (96*8 + OFFSET,   80 - 8,       5.5),
                   (120*8 + OFFSET,  80 - 8,       5.5)
-] # (x, y, tallness): where tallness can be 0.5, 1.5, etc.
+] # (x, y, tallness): where tallness can be 0.5, 1, 1.5, etc.
 
-class DIR(enum.Enum):
+class DIR(Enum):
     r = math.sqrt(2) / 2
     up = (0, -1)
     up_right = (r, -r)
@@ -65,7 +65,7 @@ class DIR(enum.Enum):
     none = (0, 0) # only so the dot product is huge and it doesn't compute as a valid movement
 
 
-class BLOCK_TYPES(enum.Enum):
+class BLOCK_TYPES(Enum):
     # (x, y, w, h)
     #  x, y:        top-left corner of the sprite
     #        w, h:  width and height of the sprite
@@ -90,5 +90,9 @@ class BLOCK_TYPES(enum.Enum):
     cloud = (16, 64, 3 *16, 1.5 *16)
 
 
-class EFECTS(enum.Enum):
-    Super = 1
+class EFECTS(auto):
+    Super = auto()
+    Cow = auto()
+
+a = EFECTS.Super
+print(a.value)

@@ -3,63 +3,107 @@ from random import randint
 import pyxel
 from Mario import Mario
 from Entity import *
-from GUI import GUI
-from Helper import *
+import Helper
 from Helper import BLOCK_TYPES as B_T
 from My_Collection import My_Collection
 
-class Game:  # y si la instancia de Game la movemos a Helper o algo así (como crear un GameAgent que ejecute Game pero que los demas archivos sigan podiendo importar game y no tener que pasarselo como parametro)
+class Game:
     def __init__(self) -> None:
 
-        pyxel.init(GAME_WIDTH, GAME_HEIGHT, caption="Pyxel Jump")
+        # INIT
+        game = self
+
+        pyxel.init(GAME_WIDTH, GAME_HEIGHT, caption="New Super Mario Bros.")
         pyxel.load("../assets/marioassets.pyxres")
 
-        self.x = 0
-        self.gui = GUI()
-        self.mario = Mario(self)
-        self.mario.game = self  # remove game as an argument for the calls for update and draw of mario and maybe of all other objects
-        self.solids = My_Collection(Goomba, My_Collection(Brick, Question_Brick, Clear_Brick), Pipe, Decor)
-        self.goombas, self.blocks, self.pipes, self.decors = self.solids.list
-        self.bricks, self.question_bricks, self.clear_bricks = self.blocks.list
+        game.x = 0
+        game.mario = Mario(game)
 
-        self.bricks.new(B_T.brick, 39 * 8, 80 + OFFSET,  0, 0)
-        self.question_bricks.new(B_T.question_brick, 41 * 8, 80 + OFFSET, 0, 0)
-        self.bricks.new(B_T.brick, 43 * 8, 80 + OFFSET,  0, 0)
-        self.question_bricks.new(B_T.question_brick, 45 * 8, 80 + OFFSET, 0, 0)
-        self.bricks.new(B_T.brick, 47 * 8, 80 + OFFSET,  0, 0) # EL TILEMAP de altura 84 SE QUEDA EN EL PIXEL de altura 80 !!!
+        # COLLECTIONS
+        game.bricks = My_Collection(STARTING_BRICKS)
+        game.question_bricks = My_Collection(STARTING_QUESTION_BRICKS)
+        game.clear_bricks = My_Collection(STARTING_CLEAR_BRICKS)
+        game.goombas = My_Collection(STARTING_GOOMBAS)
+        game.pipes = My_Collection(STARTING_PIPES)
+        game.decors = My_Collection(STARTING_DECORS)
 
-        self.bricks.new(B_T.brick, 146 * 8, 80 + 1*16 + OFFSET,  0, 0)
-        self.question_bricks.new(B_T.question_brick, 148 * 8, 80 + 1*16 + OFFSET, 0, 0)
-        self.bricks.new(B_T.brick, 150 * 8, 80 + 1*16 + OFFSET,  0, 0)
+        game.blocks = My_Collection(game.bricks, game.question_bricks, game.clear_bricks)
+        game.solid = My_Collection(game.blocks, game.goombas, game.pipes, game.decors)
 
-        self.clear_bricks.new(B_T.brick_clear, 140 * 8, 144 + OFFSET, 0, 0)
+        # ENTITIES
+        game.bricks.add(Brick(              game,    39 * 8,    80 + OFFSET))
+        game.bricks.add(Question_Brick(     game,    41 * 8,    80 + OFFSET))
+        game.bricks.add(Brick(              game,    43 * 8,    80 + OFFSET))
+        game.bricks.add(Question_Brick(     game,    45 * 8,    80 + OFFSET))
+        game.bricks.add(Brick(              game,    47 * 8,    80 + OFFSET)) # EL TILEMAP a la altura 84 se queda en la pantalla en el pixel de altura 80 !!!
 
-        self.decors.new(B_T.cloud, 30, 88, 0, 0)
+        game.bricks.add(Brick(              game,   146 * 8,    96 + OFFSET))
+        game.bricks.add(Question_Brick(     game,   148 * 8,    96 + OFFSET))
+        game.bricks.add(Brick(              game,   150 * 8,    96 + OFFSET))
 
-        # self.blocks.new(B_T.mushroom, 110, 144, 0, 0)
+        game.clear_bricks.add(Clear_Brick(  game,   140 * 8,   144 + OFFSET))
 
-        pyxel.run(self.update, self.draw)
+        game.decors.add(Decor(              game,        30,             88))
+
+        # game.blocks.new(B_T.mushroom, 110, 144))
+
+        pyxel.run(game.update, game.draw)
 
     def update(self) -> None:
+        game = self
+
         if pyxel.btnp(pyxel.KEY_Q):
             pyxel.quit()
 
-        # update mario returns the extra x
-        self.x += self.mario.update()
-        self.mario.x += 1
+        # update mario returns the extra x to move_right
+        game.x += game.mario.update()
         
-        self.solids.update(self)
+        game.solids.update()
 
     def draw(self) -> None:
+        game = self
 
-        self.gui.draw(self)
+        game.draw_background_and_gui()
 
-        self.solids.draw(self)
+        game.solids.draw()
 
-        self.mario.draw(self)
+        game.mario.draw()
+    
+    def draw_background_and_gui(self):
+        game = self
 
-        
+        # draw light blue background
+        pyxel.cls(12)
+        # draw tilemap
+        pyxel.bltm(- (game.x % 8), 0, 0, game.x // 8, 74, 128, 128)
+        # pyxel.bltm(0, 0, 0, game.x % 256 - 256, 74, 128, 128) # TODO: remove this and convert all coordinates to modulo 256 so that the whole game can infinitely repeat to the right
 
-        
+        #draw coin
+        pyxel.blt(GAME_WIDTH * POS_COINS - 8 - 2, 4, 0, 48, 104, 8, 8, 7) # -8 is the coind GAME_WIDTH, -2 is some spacing
+        pyxel.text(GAME_WIDTH * 0.6, 80, str(game.mario.x), 1)
 
-Game()
+        # draw texts
+        name_str = "MARIO"
+        pyxel.text(GAME_WIDTH * POS_POINTS, 4, name_str, 1)
+        pyxel.text(GAME_WIDTH * POS_POINTS + 1, 4, name_str, 7)
+        if DEBUG: game.points = 0
+        points_str = f'{game.points:06d}'
+        pyxel.text(GAME_WIDTH * POS_POINTS, 10, points_str, 1)
+        pyxel.text(GAME_WIDTH * POS_POINTS + 1, 10, points_str, 7)
+        if DEBUG: mario_coins = 0
+        coins_str = 'x' + f'{mario_coins:02d}'
+        pyxel.text(GAME_WIDTH * POS_COINS, 6, coins_str, 1)
+        pyxel.text(GAME_WIDTH * POS_COINS + 1, 6, coins_str, 7)
+        world_str = "WORLD"
+        pyxel.text(GAME_WIDTH * POS_WORLD + 1, 4, world_str, 1)
+        pyxel.text(GAME_WIDTH * POS_WORLD, 4, world_str, 7)
+        world_name = "1 - 1"
+        pyxel.text(GAME_WIDTH * POS_WORLD, 10, world_name, 1)
+        pyxel.text(GAME_WIDTH * POS_WORLD + 1, 10, world_name, 7)
+        time_name = "TIME"
+        pyxel.text(GAME_WIDTH * POS_TIME, 4, time_name, 1)
+        pyxel.text(GAME_WIDTH * POS_TIME + 1, 4, time_name, 7)
+        if DEBUG: mario_time = 0
+        time_name = f'{mario_time:02d}'
+        pyxel.text(GAME_WIDTH * POS_TIME, 10, time_name, 1)
+        pyxel.text(GAME_WIDTH * POS_TIME + 1, 10, time_name, 7)

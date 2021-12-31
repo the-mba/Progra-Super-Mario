@@ -5,7 +5,9 @@ from Helper import *
 from My_Collection import My_Collection
 
 class Entity:
-    def __init__(self, BLOCK_TYPE, STARTING_X, STARTING_Y, STARTING_VEL_X=0, STARTING_VEL_Y=0, HEIGHT=1, FALLS=False, PERSISTENT=False) -> None:
+    def __init__(self, game, BLOCK_TYPE, STARTING_X, STARTING_Y, STARTING_VEL_X=0, STARTING_VEL_Y=0, HEIGHT=1, FALLS=False, PERSISTENT=False) -> None:
+        self.game = game
+        
         self.BLOCK_TYPE = BLOCK_TYPE
         self.FALLS = FALLS
         
@@ -40,8 +42,8 @@ class Entity:
         self._y_prev = self._y
         self._y = min(value, FLOOR_HEIGHT - self.TALLNESS)
 
-    # Only call super().update(game) on Entities that can move
-    def update(self, game) -> None:
+    # Only call super().update() on Entities that can move
+    def update(self) -> None:
         # X-movement
         self.x += self.vel_x
         # Y-movement and gravity
@@ -62,9 +64,9 @@ class Entity:
             else:
                 self.vel_x = 0"""
     
-    def draw(self, game) -> None:
+    def draw(self) -> None:
         pyxel.blt(
-            self.x - game.x,
+            self.x - self.game.x,
             self.y,
             0, # image map that we want to use
             self.SPRITE_X,
@@ -93,10 +95,10 @@ class Entity:
 
 
 class Block(Entity):
-    def update(self, game) -> None:
-        corners = game.mario.corners()
+    def update(self) -> None:
+        corners = self.game.mario.corners()
         side = DIR.none
-        a = game.mario.angle()
+        a = self.game.mario.angle()
         #print("Mario's angle is: ", a)
         if ((self.x <= corners[0][0] and corners[0][0] <= self.x + self.WIDTH) and 
             (self.y <= corners[0][1] and corners[0][1] <= self.y + self.TALLNESS)):
@@ -105,8 +107,8 @@ class Block(Entity):
             elif abs(a - math.radians(180)) < 10 ^(-3):
                 side = DIR.right
             else:
-                p = game.mario.rect_func(self.x)
-                p_inv = game.mario.rect_func_inv(self.y)
+                p = self.game.mario.rect_func(self.x)
+                p_inv = self.game.mario.rect_func_inv(self.y)
                 if self.y <= p and p <= self.y + self.TALLNESS:
                     side = DIR.right
                 elif self.x <= p_inv and p_inv <= self.x + self.WIDTH:
@@ -123,8 +125,8 @@ class Block(Entity):
             elif abs(a - math.radians(90)) < 10 ^(-3):
                 side = DIR.down
             else:
-                p = game.mario.rect_func(self.x - game.mario.WIDTH)
-                p_inv = game.mario.rect_func_inv(self.y) + game.mario.WIDTH
+                p = self.game.mario.rect_func(self.x - self.game.mario.WIDTH)
+                p_inv = self.game.mario.rect_func_inv(self.y) + self.game.mario.WIDTH
                 if self.y <= p and p <= self.y + self.TALLNESS:
                     side = DIR.left
                 if self.x <= p_inv and p_inv <= self.x + self.WIDTH:
@@ -141,8 +143,8 @@ class Block(Entity):
             elif abs(a - math.radians(-90)) < 10 ^(-3):
                 side = DIR.up
             else:
-                p = game.mario.rect_func(self.x) + game.mario.TALLNESS
-                p_inv = game.mario.rect_func_inv(self.y - game.mario.TALLNESS)
+                p = self.game.mario.rect_func(self.x) + self.game.mario.TALLNESS
+                p_inv = self.game.mario.rect_func_inv(self.y - self.game.mario.TALLNESS)
                 if self.y <= p and p <= self.y + self.TALLNESS:
                     side = DIR.right
                 if self.x <= p_inv and p_inv <= self.x + self.WIDTH:
@@ -159,8 +161,8 @@ class Block(Entity):
             elif abs(a - math.radians(-90)) < 10 ^(-3):
                 side = DIR.up
             else:
-                p = game.mario.rect_func(self.x - game.mario.WIDTH) + game.mario.TALLNESS
-                p_inv = game.mario.rect_func_inv(self.y - game.mario.TALLNESS) + game.mario.WIDTH
+                p = self.game.mario.rect_func(self.x - self.game.mario.WIDTH) + self.game.mario.TALLNESS
+                p_inv = self.game.mario.rect_func_inv(self.y - self.game.mario.TALLNESS) + self.game.mario.WIDTH
                 if self.y <= p and p <= self.y + self.TALLNESS:
                     side = DIR.left
                 if self.x <= p_inv and p_inv <= self.x + self.WIDTH:
@@ -175,36 +177,45 @@ class Block(Entity):
         else:
             pass #print("Not anymore")
 
-        """col_dir = self.collides(game.mario.corners())
+        """col_dir = self.collides(self.game.mario.corners())
         con_1 = col_dir != DIR.none
         if con_1:
             print(col_dir.value, DIR.up.value, np.dot(col_dir.value, DIR.up.value))
         con_2 = np.dot(col_dir.value, DIR.up.value) > np.cos(math.radians(45))
         if con_1 and con_2:
-            self.destroy(game)"""  # THIS WHOLE THING IS KINDA BS, NEEDS A REWRITE !!!
+            self.destroy(self.game)"""  # THIS WHOLE THING IS KINDA BS, NEEDS A REWRITE !!!
         
-        super().update(game)
+        super().update()
 
-    def destroy(self, game):
-        game.solids.list[1].list.remove(self)
-        game.mario.prev_y = game.mario.y
-        game.mario.y = self.y + self.TALLNESS
-        game.mario.vel_y = 0
+    def destroy(self):
+        self.game.solids.list[1].list.remove(self)
+        self.game.mario.prev_y = self.game.mario.y
+        self.game.mario.y = self.y + self.TALLNESS
+        self.game.mario.vel_y = 0
 
 
 class Brick(Block):
-    pass
+    starting = STARTING_BRICKS
+    def __init__(self, game, STARTING_X, STARTING_Y, STARTING_VEL_X=0, STARTING_VEL_Y=0, HEIGHT=1, FALLS=False, PERSISTENT=False) -> None:
+        super().__init__(game, BLOCK_TYPES.brick, STARTING_X, STARTING_Y, STARTING_VEL_X=STARTING_VEL_X, STARTING_VEL_Y=STARTING_VEL_Y, HEIGHT=HEIGHT, FALLS=FALLS, PERSISTENT=PERSISTENT)
 
 
 class Question_Brick(Block):
-    pass
+    starting = STARTING_QUESTION_BRICKS
+
 
 class Clear_Brick(Block):
-    pass
+    starting = STARTING_CLEAR_BRICKS
 
 
-class Pipe(Entity):
-    def __init__(self, BLOCK_TYPE, STARTING_X, STARTING_Y, STARTING_VEL_X, STARTING_VEL_Y, HEIGHT=2, FALLS=False, PERSISTENT=False) -> None:
+class Pipe():
+    """
+    Pipe is a complex object which cannot be directly rendered.
+    That's why it's not an Entity.
+    Despite this, all of its parts are Entities
+    """
+    starting = STARTING_PIPES
+    def __init__(self, game, STARTING_X, STARTING_Y, STARTING_VEL_X=0, STARTING_VEL_Y=0, HEIGHT=2, FALLS=False, PERSISTENT=False) -> None:
         self.parts = My_Collection(Pipe.Part)
         self.HEIGHT = HEIGHT
         self.parts.new(BLOCK_TYPES.pipe_head, STARTING_X, STARTING_Y, STARTING_VEL_X, STARTING_VEL_Y)
@@ -213,17 +224,18 @@ class Pipe(Entity):
         if self.HEIGHT - int(HEIGHT):
             self.parts.new(BLOCK_TYPES.half_pipe_body, STARTING_X, STARTING_Y + 16 * int(HEIGHT), STARTING_VEL_X, STARTING_VEL_Y)
 
-    def update(self, game) -> None:
-        self.parts.update(game)
+    def update(self) -> None:
+        self.parts.update()
     
-    def draw(self, game) -> None:
-        self.parts.draw(game)
+    def draw(self) -> None:
+        self.parts.draw()
     
     class Part(Entity):
         pass
 
+
 class Decor(Entity):
-    pass
+    starting = STARTING_DECORS
 
 
 class Enemy(Entity):
@@ -231,12 +243,13 @@ class Enemy(Entity):
 
 
 class Goomba(Enemy):
-    pass
+    starting = STARTING_GOOMBAS
+
 
 class Mushroom(Entity):
-    def update(self, game) -> None:
+    def update(self) -> None:
 
-        col, side = self.collides(game.mario.corners())
+        col, side = self.collides(self.game.mario.corners())
         if col:
             print("COLLISION DETECTED!!!")
         con_1 = side != DIR.none
@@ -247,16 +260,6 @@ class Mushroom(Entity):
             pass
         pyxel.quit()
         print("EEEEEEEEEE" * 10000)
-
-
-
-
-
-
-
-
-
-
 
         s = """ def dir(self) -> DIR:
         vel_x = self.vel_x
@@ -287,7 +290,7 @@ class Mushroom(Entity):
         
         return dir """
 
-        super().update(game)
+        super().update()
     
 def collides(self, corners) -> tuple:
         col, side = False, DIR.none

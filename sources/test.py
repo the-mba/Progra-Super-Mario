@@ -13,8 +13,9 @@ print(vel_x_post)
 TESTED AND OK!!  """
 
 l = [1, 2, 3, 4, 55]
-print(tuple(zip(l)))
+print(tuple(enumerate(l)))
 
-B_T["goomba"]
+print(B_T["goomba"].value)
 
-print(exec("STARTING_" + "GOOMBA" + "S"))
+print(eval("STARTING_" + "GOOMBA" + "S"))
+
