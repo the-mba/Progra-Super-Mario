@@ -3,9 +3,8 @@ from Entity import Entity
 from Helper import *
 
 class Mario(Entity):
-
-    def __init__(self, game) -> None:  # BLOCK_TYPES.mario, MARIO_STARTING_X, MARIO_STARTING_Y, 0, MARIO_STARTING_VEL_Y, False, True
-        super().__init__(game, BLOCK_TYPES.mario, MARIO_STARTING_X, MARIO_STARTING_Y, 0, MARIO_STARTING_VEL_Y, 1, True, True)
+    def __init__(self, game) -> None:
+        super().__init__(game, BLOCK_TYPES.mario, MARIO_STARTING_X, MARIO_STARTING_Y, 0, MARIO_STARTING_VEL_Y, True, True)
         self._vel_x = 0
         self.effects = []
         self.points = 0

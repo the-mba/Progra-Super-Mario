@@ -2,10 +2,9 @@ import pyxel, math
 import numpy as np
 
 from Helper import *
-from My_Collection import My_Collection
 
 class Entity:
-    def __init__(self, game, BLOCK_TYPE, STARTING_X, STARTING_Y, STARTING_VEL_X=0, STARTING_VEL_Y=0, HEIGHT=1, FALLS=False, PERSISTENT=False) -> None:
+    def __init__(self, game, BLOCK_TYPE, STARTING_X, STARTING_Y, STARTING_VEL_X=0, STARTING_VEL_Y=0, FALLS=False, PERSISTENT=False) -> None:
         self.game = game
         
         self.BLOCK_TYPE = BLOCK_TYPE
@@ -27,18 +26,18 @@ class Entity:
         self.alive = True
     
     @property
-    def x(self):
+    def x(self) -> int:
         return self._x
     @x.setter
-    def x(self, value):
+    def x(self, value) -> None:
         self._x_prev = self._x
         self._x = value
-    
+
     @property
-    def y(self):
+    def y(self) -> int:
         return self._y
     @y.setter
-    def y(self, value):
+    def y(self, value) -> None:
         self._y_prev = self._y
         self._y = min(value, FLOOR_HEIGHT - self.TALLNESS)
 
@@ -47,14 +46,13 @@ class Entity:
         # X-movement
         self.x += self.vel_x
         # Y-movement and gravity
-        self.y += self.vel_y
         if self.FALLS and self.height():
             self.vel_y += GRAVITY
         else:
             self.vel_y = 0
+        self.y += self.vel_y
         
-        self.vel_x = 0
-        """# X-AXIS air friction, so velocity reduces naturally
+        # X-AXIS air friction, so velocity reduces naturally
         if self.vel_x != 0:
             vel_x_prev_abs = abs( self.vel_x )
             vel_x_post_abs = vel_x_prev_abs + MARIO_AIR_FRICTION
@@ -62,7 +60,7 @@ class Entity:
             if vel_x_post_abs > 0:
                 self.vel_x = (vel_x_post_abs) * abs(self.vel_x) / self.vel_x
             else:
-                self.vel_x = 0"""
+                self.vel_x = 0
     
     def draw(self) -> None:
         pyxel.blt(
@@ -76,7 +74,7 @@ class Entity:
             12 # color, blue, so it becomes transparent
         )
 
-    def height(self) -> float:
+    def height(self) -> int:
         return max(0, FLOOR_HEIGHT - self.TALLNESS - self.y)
     
     def angle(self) -> float:
@@ -187,25 +185,20 @@ class Block(Entity):
         
         super().update()
 
-    def destroy(self):
-        self.game.solids.list[1].list.remove(self)
-        self.game.mario.prev_y = self.game.mario.y
-        self.game.mario.y = self.y + self.TALLNESS
-        self.game.mario.vel_y = 0
-
 
 class Brick(Block):
-    starting = STARTING_BRICKS
-    def __init__(self, game, STARTING_X, STARTING_Y, STARTING_VEL_X=0, STARTING_VEL_Y=0, HEIGHT=1, FALLS=False, PERSISTENT=False) -> None:
-        super().__init__(game, BLOCK_TYPES.brick, STARTING_X, STARTING_Y, STARTING_VEL_X=STARTING_VEL_X, STARTING_VEL_Y=STARTING_VEL_Y, HEIGHT=HEIGHT, FALLS=FALLS, PERSISTENT=PERSISTENT)
+    def __init__(self, game, STARTING_X, STARTING_Y, STARTING_VEL_X=0, STARTING_VEL_Y=0, FALLS=False, PERSISTENT=False) -> None:
+        super().__init__(game, BLOCK_TYPES.brick, STARTING_X, STARTING_Y, STARTING_VEL_X=STARTING_VEL_X, STARTING_VEL_Y=STARTING_VEL_Y, FALLS=FALLS, PERSISTENT=PERSISTENT)
 
 
 class Question_Brick(Block):
-    starting = STARTING_QUESTION_BRICKS
+    def __init__(self, game, STARTING_X, STARTING_Y, STARTING_VEL_X=0, STARTING_VEL_Y=0, FALLS=False, PERSISTENT=False) -> None:
+        super().__init__(game, BLOCK_TYPES.question_brick, STARTING_X, STARTING_Y, STARTING_VEL_X=STARTING_VEL_X, STARTING_VEL_Y=STARTING_VEL_Y, FALLS=FALLS, PERSISTENT=PERSISTENT)
 
 
 class Clear_Brick(Block):
-    starting = STARTING_CLEAR_BRICKS
+    def __init__(self, game, STARTING_X, STARTING_Y, STARTING_VEL_X=0, STARTING_VEL_Y=0, FALLS=False, PERSISTENT=False) -> None:
+        super().__init__(game, BLOCK_TYPES.clear_brick, STARTING_X, STARTING_Y, STARTING_VEL_X=STARTING_VEL_X, STARTING_VEL_Y=STARTING_VEL_Y, FALLS=FALLS, PERSISTENT=PERSISTENT)
 
 
 class Pipe():
@@ -214,28 +207,47 @@ class Pipe():
     That's why it's not an Entity.
     Despite this, all of its parts are Entities
     """
-    starting = STARTING_PIPES
-    def __init__(self, game, STARTING_X, STARTING_Y, STARTING_VEL_X=0, STARTING_VEL_Y=0, HEIGHT=2, FALLS=False, PERSISTENT=False) -> None:
-        self.parts = My_Collection(Pipe.Part)
-        self.HEIGHT = HEIGHT
-        self.parts.new(BLOCK_TYPES.pipe_head, STARTING_X, STARTING_Y, STARTING_VEL_X, STARTING_VEL_Y)
-        for i in range(1, int(HEIGHT)):
-            self.parts.new(BLOCK_TYPES.pipe_body, STARTING_X, STARTING_Y + 16 * i, STARTING_VEL_X, STARTING_VEL_Y)
-        if self.HEIGHT - int(HEIGHT):
-            self.parts.new(BLOCK_TYPES.half_pipe_body, STARTING_X, STARTING_Y + 16 * int(HEIGHT), STARTING_VEL_X, STARTING_VEL_Y)
+    def __init__(self, game, STARTING_X: int, STARTING_Y: int, STARTING_VEL_X: int =0, STARTING_VEL_Y: int =0, HEIGHT: int =0, FALLS: bool =False, PERSISTENT: bool =False) -> None:
+        self.HEIGHT = 0
+        if HEIGHT > 0:
+            self.HEIGHT = HEIGHT
+            self.parts = []
+
+            self.parts.append(Pipe.Head(STARTING_X, STARTING_Y, STARTING_VEL_X, STARTING_VEL_Y, FALLS, PERSISTENT))
+            
+            for i in range(1, int(HEIGHT)):
+                self.parts.append(Pipe.Body(STARTING_X, STARTING_Y + 16 * i, STARTING_VEL_X, STARTING_VEL_Y, FALLS, PERSISTENT))
+            
+            if self.HEIGHT - int(HEIGHT):
+                self.parts.append(Pipe.Half_Body(STARTING_X, STARTING_Y + 16 * int(HEIGHT), STARTING_VEL_X, STARTING_VEL_Y, FALLS, PERSISTENT))
 
     def update(self) -> None:
-        self.parts.update()
+        if self.HEIGHT > 0:
+            [e.update() for e in self.parts]
     
     def draw(self) -> None:
-        self.parts.draw()
+        if self.HEIGHT > 0:
+            [e.draw() for e in self.parts]
     
-    class Part(Entity):
-        pass
+    class Head(Entity):
+        def __init__(self, game, STARTING_X, STARTING_Y, STARTING_VEL_X=0, STARTING_VEL_Y=0, FALLS=False, PERSISTENT=False) -> None:
+            super().__init__(game, BLOCK_TYPES.pipe_head, STARTING_X, STARTING_Y, STARTING_VEL_X=STARTING_VEL_X, STARTING_VEL_Y=STARTING_VEL_Y, FALLS=FALLS, PERSISTENT=PERSISTENT)
 
 
-class Decor(Entity):
+    class Body(Entity):
+        def __init__(self, game, STARTING_X, STARTING_Y, STARTING_VEL_X=0, STARTING_VEL_Y=0, FALLS=False, PERSISTENT=False) -> None:
+            super().__init__(game, BLOCK_TYPES.pipe_body, STARTING_X, STARTING_Y, STARTING_VEL_X=STARTING_VEL_X, STARTING_VEL_Y=STARTING_VEL_Y, FALLS=FALLS, PERSISTENT=PERSISTENT)
+    
+
+    class Half_Body(Entity):
+        def __init__(self, game, STARTING_X, STARTING_Y, STARTING_VEL_X=0, STARTING_VEL_Y=0, FALLS=False, PERSISTENT=False) -> None:
+            super().__init__(game, BLOCK_TYPES.pipe_half_body, STARTING_X, STARTING_Y, STARTING_VEL_X=STARTING_VEL_X, STARTING_VEL_Y=STARTING_VEL_Y, FALLS=FALLS, PERSISTENT=PERSISTENT)
+
+
+class Cloud(Entity):
     starting = STARTING_DECORS
+    def __init__(self, game, STARTING_X, STARTING_Y, STARTING_VEL_X=0, STARTING_VEL_Y=0, FALLS=False, PERSISTENT=False) -> None:
+        super().__init__(game, BLOCK_TYPES.cloud, STARTING_X, STARTING_Y, STARTING_VEL_X=STARTING_VEL_X, STARTING_VEL_Y=STARTING_VEL_Y, FALLS=FALLS, PERSISTENT=PERSISTENT)
 
 
 class Enemy(Entity):
@@ -244,6 +256,8 @@ class Enemy(Entity):
 
 class Goomba(Enemy):
     starting = STARTING_GOOMBAS
+    def __init__(self, game, STARTING_X, STARTING_Y, STARTING_VEL_X=0, STARTING_VEL_Y=0, FALLS=False, PERSISTENT=False) -> None:
+        super().__init__(game, BLOCK_TYPES.goomba, STARTING_X, STARTING_Y, STARTING_VEL_X=STARTING_VEL_X, STARTING_VEL_Y=STARTING_VEL_Y, FALLS=FALLS, PERSISTENT=PERSISTENT)
 
 
 class Mushroom(Entity):

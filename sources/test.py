@@ -12,10 +12,18 @@ vel_x_post = ( abs(vel_x_prev) + MARIO_AIR_FRICTION ) * abs(vel_x_prev) / vel_x_
 print(vel_x_post)
 TESTED AND OK!!  """
 
-l = [1, 2, 3, 4, 55]
+l = [1, 2, 3, 4, 5]
 print(tuple(enumerate(l)))
 
 print(B_T["goomba"].value)
 
 print(eval("STARTING_" + "GOOMBA" + "S"))
 
+print ( map ( print, l) )
+
+
+def x(a):
+    return a*a
+
+for e in map(x, l):
+    print(e)

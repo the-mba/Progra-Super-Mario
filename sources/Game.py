@@ -1,52 +1,28 @@
-from random import randint
-
-import pyxel
-from Mario import Mario
+import pyxel, Mario
 from Entity import *
-import Helper
-from Helper import BLOCK_TYPES as B_T
-from My_Collection import My_Collection
 
 class Game:
     def __init__(self) -> None:
 
         # INIT
         game = self
-
-        pyxel.init(GAME_WIDTH, GAME_HEIGHT, caption="New Super Mario Bros.")
-        pyxel.load("../assets/marioassets.pyxres")
-
         game.x = 0
-        game.mario = Mario(game)
-
-        # COLLECTIONS
-        game.bricks = My_Collection(STARTING_BRICKS)
-        game.question_bricks = My_Collection(STARTING_QUESTION_BRICKS)
-        game.clear_bricks = My_Collection(STARTING_CLEAR_BRICKS)
-        game.goombas = My_Collection(STARTING_GOOMBAS)
-        game.pipes = My_Collection(STARTING_PIPES)
-        game.decors = My_Collection(STARTING_DECORS)
-
-        game.blocks = My_Collection(game.bricks, game.question_bricks, game.clear_bricks)
-        game.solid = My_Collection(game.blocks, game.goombas, game.pipes, game.decors)
 
         # ENTITIES
-        game.bricks.add(Brick(              game,    39 * 8,    80 + OFFSET))
-        game.bricks.add(Question_Brick(     game,    41 * 8,    80 + OFFSET))
-        game.bricks.add(Brick(              game,    43 * 8,    80 + OFFSET))
-        game.bricks.add(Question_Brick(     game,    45 * 8,    80 + OFFSET))
-        game.bricks.add(Brick(              game,    47 * 8,    80 + OFFSET)) # EL TILEMAP a la altura 84 se queda en la pantalla en el pixel de altura 80 !!!
+        game.bricks = [Brick(game, *element) for element in STARTING_BRICKS]
+        game.question_bricks = [Question_Brick(game, *element) for element in STARTING_QUESTION_BRICKS]
+        game.clear_bricks = [Clear_Brick(game, *element) for element in STARTING_CLEAR_BRICKS]
+        game.goombas = [Goomba(game, *element) for element in STARTING_GOOMBAS]
+        game.pipes = [Pipe(game, *element) for element in STARTING_PIPES]
+        game.decors = [Cloud(game, *element) for element in STARTING_DECORS]
 
-        game.bricks.add(Brick(              game,   146 * 8,    96 + OFFSET))
-        game.bricks.add(Question_Brick(     game,   148 * 8,    96 + OFFSET))
-        game.bricks.add(Brick(              game,   150 * 8,    96 + OFFSET))
+        game.solids = [game.bricks, game.question_bricks, game.clear_bricks, game.goombas, game.pipes, game.decors]
 
-        game.clear_bricks.add(Clear_Brick(  game,   140 * 8,   144 + OFFSET))
+        game.mario = Mario.Mario(game)
 
-        game.decors.add(Decor(              game,        30,             88))
-
-        # game.blocks.new(B_T.mushroom, 110, 144))
-
+        # PYXEL
+        pyxel.init(GAME_WIDTH, GAME_HEIGHT, caption="New Super Mario Bros.")
+        pyxel.load("../assets/marioassets.pyxres")
         pyxel.run(game.update, game.draw)
 
     def update(self) -> None:
@@ -54,22 +30,24 @@ class Game:
 
         if pyxel.btnp(pyxel.KEY_Q):
             pyxel.quit()
+        
+        [solid.update() for sublist in game.solids for solid in sublist]
+
+        [solid.update() for sublist in game.solids for solid in sublist]
 
         # update mario returns the extra x to move_right
         game.x += game.mario.update()
-        
-        game.solids.update()
 
     def draw(self) -> None:
         game = self
 
         game.draw_background_and_gui()
 
-        game.solids.draw()
+        [solid.draw() for sublist in game.solids for solid in sublist]
 
         game.mario.draw()
     
-    def draw_background_and_gui(self):
+    def draw_background_and_gui(self) -> None:
         game = self
 
         # draw light blue background

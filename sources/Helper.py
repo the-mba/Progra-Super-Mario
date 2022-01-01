@@ -36,21 +36,22 @@ POS_TIME = 0.8
 # STARTING ENTITIES
 # -----------------
 # EL TILEMAP de altura 84 SE QUEDA EN EL PIXEL de altura 80 !!!
+
+STARTING_BRICKS = [] # (x, y): position
+STARTING_QUESTION_BRICKS = [] # (x, y): position
+STARTING_CLEAR_BRICKS = [] # (x, y): position
 STARTING_GOOMBAS = [
     (42*8,      144 + OFFSET),
     (76 * 8,    144 + OFFSET),
     (106 * 8,   144 + OFFSET),
     (110 * 8,   144 + OFFSET)
-]
-STARTING_BRICKS = []
-STARTING_QUESTION_BRICKS = []
-STARTING_CLEAR_BRICKS = []
-STARTING_DECORS = []
+] # (x, y, vel_x, vel_y): position and velocity
 STARTING_PIPES = [(56*8 + OFFSET,   80 + 3 * 16,    2),
                   (72*8 + OFFSET,   80 + 1 * 16,    4),
                   (96*8 + OFFSET,   80 - 8,       5.5),
                   (120*8 + OFFSET,  80 - 8,       5.5)
 ] # (x, y, tallness): where tallness can be 0.5, 1, 1.5, etc.
+STARTING_DECORS = [] # (x, y): position
 
 class DIR(Enum):
     r = math.sqrt(2) / 2
@@ -77,7 +78,7 @@ class BLOCK_TYPES(Enum):
     mushroom = (0, 32, 16, 16)
 
     brick = (0, 16, 16, 16)
-    brick_clear = (16, 16, 16, 16)
+    clear_brick = (16, 16, 16, 16)
     question_brick = (16, 0, 16, 16)
 
     goomba = (32, 48, 16, 16)
@@ -85,7 +86,7 @@ class BLOCK_TYPES(Enum):
     pipe = (32, 0, 32, 32)  # just a placeholder, these values shouldn't be directly used. Instead, it should create a pipe_head and several pipe_body
     pipe_head = (32, 0, 32, 16)
     pipe_body = (32, 16, 32, 16)
-    half_pipe_body = (32, 16, 32, 8)
+    pipe_half_body = (32, 16, 32, 8)
 
     cloud = (16, 64, 3 *16, 1.5 *16)
 
