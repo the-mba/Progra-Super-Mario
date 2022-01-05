@@ -9,12 +9,12 @@ class Game:
         game.x = 0
 
         # ENTITIES
-        game.bricks = [Brick(game, *element) for element in STARTING_BRICKS]
-        game.question_bricks = [Question_Brick(game, *element) for element in STARTING_QUESTION_BRICKS]
-        game.clear_bricks = [Clear_Brick(game, *element) for element in STARTING_CLEAR_BRICKS]
-        game.goombas = [Goomba(game, *element) for element in STARTING_GOOMBAS]
-        game.pipes = [Pipe(game, *element) for element in STARTING_PIPES]
-        game.decors = [Cloud(game, *element) for element in STARTING_DECORS]
+        game.bricks = [Brick(game, *e) for e in STARTING_BRICKS]
+        game.question_bricks = [Question_Brick(game, *e) for e in STARTING_QUESTION_BRICKS]
+        game.clear_bricks = [Clear_Brick(game, *e) for e in STARTING_CLEAR_BRICKS]
+        game.goombas = [Goomba(game, *e) for e in STARTING_GOOMBAS]
+        game.pipes = [Pipe(game, *e) for e in STARTING_PIPES]
+        game.decors = [Cloud(game, *e) for e in STARTING_DECORS]
 
         game.solids = [game.bricks, game.question_bricks, game.clear_bricks, game.goombas, game.pipes, game.decors]
 
@@ -58,7 +58,6 @@ class Game:
 
         #draw coin
         pyxel.blt(GAME_WIDTH * POS_COINS - 8 - 2, 4, 0, 48, 104, 8, 8, 7) # -8 is the coind GAME_WIDTH, -2 is some spacing
-        pyxel.text(GAME_WIDTH * 0.6, 80, str(game.mario.x), 1)
 
         # draw texts
         name_str = "MARIO"
@@ -85,3 +84,7 @@ class Game:
         time_name = f'{mario_time:02d}'
         pyxel.text(GAME_WIDTH * POS_TIME, 10, time_name, 1)
         pyxel.text(GAME_WIDTH * POS_TIME + 1, 10, time_name, 7)
+
+        if DEBUG:
+            pyxel.text(GAME_WIDTH * 0.6, 80, str(game.mario.x), 1)
+            pyxel.text(GAME_WIDTH * 0.6, 86, str(game.mario.vel_x), 1)

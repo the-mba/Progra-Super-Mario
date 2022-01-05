@@ -7,7 +7,7 @@ OFFSET = -12 if DEBUG else 0
 # Background
 GAME_WIDTH = 256
 GAME_HEIGHT = 192
-BACKGROUND_RIGHT_MOVEMENT_THRESHOLD = int (GAME_WIDTH * 0.6)
+BACKGROUND_RIGHT_MOVEMENT_THRESHOLD = GAME_WIDTH * 0.6
 FLOOR_HEIGHT = GAME_HEIGHT - 32
 
 # Mario's sprite position and size
@@ -19,13 +19,14 @@ MARIO_SPRITE_Y = 48
 # Mario movement, and derivatives
 MARIO_STARTING_X = 140
 MARIO_STARTING_Y = FLOOR_HEIGHT - MARIO_TALLNESS  # (192 -32) -16 = 144
+MARIO_STARTING_VEL_X = 0
 MARIO_STARTING_VEL_Y = 0
-MARIO_CONSTANT_VEL_X = 5
 MARIO_JUMPING_INITIAL_SPEED = -20
-MARIO_AIR_FRICTION = -40
+MARIO_ACC_X = 1.5 # acceleration on the x axis (instantaneously applied)
 
 # Universal Constant
 GRAVITY = 2
+AIR_FRICTION_COEFFICIENT = 0.15
 
 # GUI
 POS_POINTS = 0.1
@@ -54,6 +55,9 @@ STARTING_PIPES = [(56*8 + OFFSET,   80 + 3 * 16,    2),
 STARTING_DECORS = [] # (x, y): position
 
 class DIR(Enum):
+    def angle(self) -> float:
+        return math.atan2(self[1], self[0])     
+
     r = math.sqrt(2) / 2
     up = (0, -1)
     up_right = (r, -r)
@@ -95,5 +99,5 @@ class EFECTS(auto):
     Super = auto()
     Cow = auto()
 
-a = EFECTS.Super
-print(a.value)
+# TODO:
+# Collisions

@@ -4,7 +4,7 @@ import numpy as np
 from Helper import *
 
 class Entity:
-    def __init__(self, game, BLOCK_TYPE, STARTING_X, STARTING_Y, STARTING_VEL_X=0, STARTING_VEL_Y=0, FALLS=False, PERSISTENT=False) -> None:
+    def __init__(self, game, BLOCK_TYPE: BLOCK_TYPES, STARTING_X: float, STARTING_Y: float, STARTING_VEL_X: float =0, STARTING_VEL_Y: float =0, FALLS: bool =False, PERSISTENT: bool =False) -> None:
         self.game = game
         
         self.BLOCK_TYPE = BLOCK_TYPE
@@ -26,41 +26,35 @@ class Entity:
         self.alive = True
     
     @property
-    def x(self) -> int:
+    def x(self) -> float:
         return self._x
     @x.setter
-    def x(self, value) -> None:
+    def x(self, value: float) -> None:
         self._x_prev = self._x
         self._x = value
 
     @property
-    def y(self) -> int:
+    def y(self) -> float:
         return self._y
     @y.setter
-    def y(self, value) -> None:
+    def y(self, value: float) -> None:
         self._y_prev = self._y
-        self._y = min(value, FLOOR_HEIGHT - self.TALLNESS)
+        self._y = min(value, FLOOR_HEIGHT - self.TALLNESS) # TODO: create a dynamic floor height with collisions
 
     # Only call super().update() on Entities that can move
-    def update(self) -> None:
+    def update(self, jump=False) -> None:
+        # X-AXIS air friction, so speed reduces naturally
+        self.vel_x *= 1 - AIR_FRICTION_COEFFICIENT
         # X-movement
         self.x += self.vel_x
         # Y-movement and gravity
         if self.FALLS and self.height():
             self.vel_y += GRAVITY
+        elif jump:
+            self.vel_y = MARIO_JUMPING_INITIAL_SPEED
         else:
             self.vel_y = 0
         self.y += self.vel_y
-        
-        # X-AXIS air friction, so velocity reduces naturally
-        if self.vel_x != 0:
-            vel_x_prev_abs = abs( self.vel_x )
-            vel_x_post_abs = vel_x_prev_abs + MARIO_AIR_FRICTION
-
-            if vel_x_post_abs > 0:
-                self.vel_x = (vel_x_post_abs) * abs(self.vel_x) / self.vel_x
-            else:
-                self.vel_x = 0
     
     def draw(self) -> None:
         pyxel.blt(
@@ -74,9 +68,12 @@ class Entity:
             12 # color, blue, so it becomes transparent
         )
 
-    def height(self) -> int:
-        return max(0, FLOOR_HEIGHT - self.TALLNESS - self.y)
+    def height(self) -> float:
+        return FLOOR_HEIGHT - self.TALLNESS - self.y
     
+    def center(self) -> tuple:
+        return self.x + ( self.WIDTH / 2 ), self.y + ( self.TALLNESS / 2 )
+
     def angle(self) -> float:
         return math.atan2(self.vel_y, self.vel_x)      
         
@@ -90,6 +87,81 @@ class Entity:
     def rect_func_inv(self, y) -> float:
         p = (self.x - self._x_prev) / (self.y - self._y_prev)
         return self._x_prev + p * (y - self._y_prev)
+    
+    def collides(self, other) -> tuple[DIR]:
+        collision_corner = [DIR.none]
+        
+        x_interval = Entity.Interval(self.x, self.x + self.WIDTH)
+        y_interval = Entity.Interval(self.y, self.y + self.TALLNESS)
+        for corner in other.corners():
+            if x_interval.contains(corner[0]) and y_interval.contains(corner[1]):
+                try:
+                    collision_corner.remove(DIR.none)
+                except:
+                    pass
+                vector = [p - c for (p, c) in (corner, self.center())]
+                vector_magnitude = math.sqrt(sum([sub^2 for sub in vector]))
+                vector_magnitude_one = [sub / vector_magnitude for sub in vector]
+                return DIR(vector_magnitude)
+                
+                collision_corner.append(corner)
+        return collision_corner
+
+    
+            
+        
+
+        if ((self.x <= corners[0][0] and corners[0][0] <= self.x + self.WIDTH) and 
+            (self.y <= corners[0][1] and corners[0][1] <= self.y + self.TALLNESS)):
+            col = True
+            corner = DIR.up_left
+
+        if ((self.x <= corners[1][0] and corners[1][0] <= self.x + self.WIDTH) and
+            (self.y <= corners[1][1] and corners[1][1] <= self.y + self.TALLNESS)):
+            col = True
+            corner = DIR.up_right
+
+        if ((self.x <= corners[2][0] and corners[2][0] <= self.x + self.WIDTH) and
+            (self.y <= corners[2][1] and corners[2][1] <= self.y + self.TALLNESS)):
+            col = True
+            corner = DIR.down_left
+
+        if ((self.x <= corners[3][0] and corners[3][0] <= self.x + self.WIDTH) and
+            (self.y <= corners[3][1] and corners[3][1] <= self.y + self.TALLNESS)):
+            col = True
+            corner = DIR.down_right 
+
+        return col, corner
+    
+    class Interval:
+        def __init__(self, left: float, closed_left: bool, right: float, closed_right: bool, is_b_relative_not_absolute: bool) -> None:
+            self.left = left
+            self.closed_left = closed_left
+            self.right = left + right if is_b_relative_not_absolute else right
+            self.closed_right = closed_right
+        
+        def contains(self, *points: list[float]) -> list[float]:
+            contained_points = []
+            for p in points:
+                if self._contains_point(p):
+                    contained_points.append(p)
+            return contained_points
+
+        def _contains_point(self, p: float) -> bool:
+            return (
+                (
+                    (self.closed_left and self.left <= p)
+                    or
+                    (not self.closed_left and self.left < p)
+                )
+                and
+                (
+                    (self.closed_right and p <= self.right)
+                    or
+                    (not self.closed_right and p < self.right)
+                )
+            )
+
 
 
 class Block(Entity):
@@ -207,7 +279,7 @@ class Pipe():
     That's why it's not an Entity.
     Despite this, all of its parts are Entities
     """
-    def __init__(self, game, STARTING_X: int, STARTING_Y: int, STARTING_VEL_X: int =0, STARTING_VEL_Y: int =0, HEIGHT: int =0, FALLS: bool =False, PERSISTENT: bool =False) -> None:
+    def __init__(self, game, STARTING_X: float, STARTING_Y: float, STARTING_VEL_X: float =0, STARTING_VEL_Y: float =0, HEIGHT: float =0, FALLS: bool =False, PERSISTENT: bool =False) -> None:
         self.HEIGHT = 0
         if HEIGHT > 0:
             self.HEIGHT = HEIGHT
@@ -305,28 +377,3 @@ class Mushroom(Entity):
         return dir """
 
         super().update()
-    
-def collides(self, corners) -> tuple:
-        col, side = False, DIR.none
-
-        if ((self.x <= corners[0][0] and corners[0][0] <= self.x + self.WIDTH) and 
-            (self.y <= corners[0][1] and corners[0][1] <= self.y + self.TALLNESS)):
-            side = DIR.up_left
-            col = True
-
-        if ((self.x <= corners[1][0] and corners[1][0] <= self.x + self.WIDTH) and
-            (self.y <= corners[1][1] and corners[1][1] <= self.y + self.TALLNESS)):
-            side = DIR.up_right
-            col = True
-
-        if ((self.x <= corners[2][0] and corners[2][0] <= self.x + self.WIDTH) and
-            (self.y <= corners[2][1] and corners[2][1] <= self.y + self.TALLNESS)):
-            side = DIR.down_left
-            col = True
-
-        if ((self.x <= corners[3][0] and corners[3][0] <= self.x + self.WIDTH) and
-            (self.y <= corners[3][1] and corners[3][1] <= self.y + self.TALLNESS)):
-            side = DIR.down_right 
-            col = True
-
-        return col, side
