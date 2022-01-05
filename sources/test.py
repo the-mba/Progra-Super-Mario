@@ -1,7 +1,8 @@
 from Entity import Entity
 from Helper import *
 from Helper import BLOCK_TYPES as B_T
-
+from Mario import Mario
+"""
 l = [1, 2, 3, 4, 5]
 print(tuple(enumerate(l)))
 
@@ -17,3 +18,18 @@ def x(a):
 
 for e in map(x, l):
     print(e)
+"""
+
+corner = (0, 0)
+center = (1, 1)
+width = corner[0] - center[0]
+tallness = corner[1] - center[1]
+
+vector = [abs(p - c) / measure for (p, c, measure) in zip(corner, center, (width, tallness))]
+vector_magnitude = math.sqrt(sum([pow(sub, 2) for sub in vector]))
+vector_magnitude_one = tuple([sub / vector_magnitude for sub in vector])
+
+print(vector)
+print(vector_magnitude_one)
+print(DIR.up_left.value)
+print(DIR.get_DIR_with_similar_coords(vector_magnitude_one))

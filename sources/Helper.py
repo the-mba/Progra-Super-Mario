@@ -57,6 +57,11 @@ STARTING_DECORS = [] # (x, y): position
 class DIR(Enum):
     def angle(self) -> float:
         return math.atan2(self[1], self[0])     
+    
+    def get_DIR_with_similar_coords(coords):
+        for dir in DIR:
+            if all([abs(dir[i] - coords[i]) < 10 ^(-6) for i in range(len(dir))]):
+                return dir
 
     r = math.sqrt(2) / 2
     up = (0, -1)

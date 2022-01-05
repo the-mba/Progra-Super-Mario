@@ -75,11 +75,20 @@ class Entity:
         return self.x + ( self.WIDTH / 2 ), self.y + ( self.TALLNESS / 2 )
 
     def angle(self) -> float:
-        return math.atan2(self.vel_y, self.vel_x)      
+        return math.atan2(self.vel_y, self.vel_x) 
         
     def corners(self) -> tuple:
         return ((self.x, self.y), (self.x + self.WIDTH, self.y), (self.x, self.y + self.TALLNESS), (self.x + self.WIDTH, self.y + self.TALLNESS))
     
+    def get_DIR_towards_corner(self, corner) -> DIR:
+        """
+        vector = [p - c for (p, c) in (corner, self.center())]
+        vector_magnitude = math.sqrt(sum([sub^2 for sub in vector]))
+        vector_magnitude_one = [sub / vector_magnitude for sub in vector]
+        """
+        vector = [abs(p - c) * 2 / measure for (p, c, measure) in (corner, self.center(), (self.WIDTH, self.TALLNESS))]
+        return DIR.get_DIR_with_similar_coords(vecctor)
+
     def rect_func(self, x) -> float:
         p = (self.y - self._y_prev) / (self.x - self._x_prev)
         return self._y_prev + p * (x - self._x_prev)
@@ -91,21 +100,18 @@ class Entity:
     def collides(self, other) -> tuple[DIR]:
         collision_corner = [DIR.none]
         
-        x_interval = Entity.Interval(self.x, self.x + self.WIDTH)
-        y_interval = Entity.Interval(self.y, self.y + self.TALLNESS)
-        for corner in other.corners():
+        x_interval = Entity.Interval(other.x, other.x + other.WIDTH)
+        y_interval = Entity.Interval(other.y, other.y + other.TALLNESS)
+        for corner in self.corners():
             if x_interval.contains(corner[0]) and y_interval.contains(corner[1]):
                 try:
                     collision_corner.remove(DIR.none)
                 except:
                     pass
-                vector = [p - c for (p, c) in (corner, self.center())]
-                vector_magnitude = math.sqrt(sum([sub^2 for sub in vector]))
-                vector_magnitude_one = [sub / vector_magnitude for sub in vector]
-                return DIR(vector_magnitude)
-                
-                collision_corner.append(corner)
+                collision_corner.append(self.get_DIR_towards_corner(corner))
         return collision_corner
+    
+    
 
     
             
@@ -167,32 +173,34 @@ class Entity:
 class Block(Entity):
     def update(self) -> None:
         corners = self.game.mario.corners()
-        side = DIR.none
-        a = self.game.mario.angle()
-        #print("Mario's angle is: ", a)
-        if ((self.x <= corners[0][0] and corners[0][0] <= self.x + self.WIDTH) and 
-            (self.y <= corners[0][1] and corners[0][1] <= self.y + self.TALLNESS)):
-            if abs(a - math.radians(90)) < 10 ^(-3):
-                side = DIR.down
-            elif abs(a - math.radians(180)) < 10 ^(-3):
-                side = DIR.right
-            else:
-                p = self.game.mario.rect_func(self.x)
-                p_inv = self.game.mario.rect_func_inv(self.y)
-                if self.y <= p and p <= self.y + self.TALLNESS:
-                    side = DIR.right
-                elif self.x <= p_inv and p_inv <= self.x + self.WIDTH:
+        corner_of_
+        if self.collides(self.game.mario):
+            side = DIR.none
+            angle = self.game.mario.angle()
+            #print("Mario's angle is: ", a)
+            if ((self.x <= corners[0][0] and corners[0][0] <= self.x + self.WIDTH) and 
+                (self.y <= corners[0][1] and corners[0][1] <= self.y + self.TALLNESS)):
+                if abs(angle - math.radians(90)) < 10 ^(-3):
                     side = DIR.down
-                elif math.radians(135) <= a and a <= math.radians(180):
+                elif abs(angle - math.radians(180)) < 10 ^(-3):
                     side = DIR.right
                 else:
-                    side = DIR.down
+                    p = self.game.mario.rect_func(self.x)
+                    p_inv = self.game.mario.rect_func_inv(self.y)
+                    if self.y <= p and p <= self.y + self.TALLNESS:
+                        side = DIR.right
+                    elif self.x <= p_inv and p_inv <= self.x + self.WIDTH:
+                        side = DIR.down
+                    elif math.radians(135) <= angle and angle <= math.radians(180):
+                        side = DIR.right
+                    else:
+                        side = DIR.down
 
         if ((self.x <= corners[1][0] and corners[1][0] <= self.x + self.WIDTH) and
             (self.y <= corners[1][1] and corners[1][1] <= self.y + self.TALLNESS)):
-            if abs(a - math.radians(0)) < 10 ^(-3):
+            if abs(angle - math.radians(0)) < 10 ^(-3):
                 side = DIR.left
-            elif abs(a - math.radians(90)) < 10 ^(-3):
+            elif abs(angle - math.radians(90)) < 10 ^(-3):
                 side = DIR.down
             else:
                 p = self.game.mario.rect_func(self.x - self.game.mario.WIDTH)
@@ -201,16 +209,16 @@ class Block(Entity):
                     side = DIR.left
                 if self.x <= p_inv and p_inv <= self.x + self.WIDTH:
                     side = DIR.down
-                elif 0 <= a and a <= math.radians(45):
+                elif 0 <= angle and angle <= math.radians(45):
                     side = DIR.left
                 else:
                     side = DIR.down
 
         if ((self.x <= corners[2][0] and corners[2][0] <= self.x + self.WIDTH) and
             (self.y <= corners[2][1] and corners[2][1] <= self.y + self.TALLNESS)):
-            if abs(a - math.radians(180)) < 10 ^(-3):
+            if abs(angle - math.radians(180)) < 10 ^(-3):
                 side = DIR.right
-            elif abs(a - math.radians(-90)) < 10 ^(-3):
+            elif abs(angle - math.radians(-90)) < 10 ^(-3):
                 side = DIR.up
             else:
                 p = self.game.mario.rect_func(self.x) + self.game.mario.TALLNESS
@@ -219,16 +227,16 @@ class Block(Entity):
                     side = DIR.right
                 if self.x <= p_inv and p_inv <= self.x + self.WIDTH:
                     side = DIR.up
-                elif math.radians(-180) <= a and a <= math.radians(-135):
+                elif math.radians(-180) <= angle and angle <= math.radians(-135):
                     side = DIR.right
                 else:
                     side = DIR.up
 
         if ((self.x <= corners[3][0] and corners[3][0] <= self.x + self.WIDTH) and
             (self.y <= corners[3][1] and corners[3][1] <= self.y + self.TALLNESS)):
-            if abs(a - math.radians(0)) < 10 ^(-3):
+            if abs(angle - math.radians(0)) < 10 ^(-3):
                 side = DIR.left
-            elif abs(a - math.radians(-90)) < 10 ^(-3):
+            elif abs(angle - math.radians(-90)) < 10 ^(-3):
                 side = DIR.up
             else:
                 p = self.game.mario.rect_func(self.x - self.game.mario.WIDTH) + self.game.mario.TALLNESS
@@ -237,7 +245,7 @@ class Block(Entity):
                     side = DIR.left
                 if self.x <= p_inv and p_inv <= self.x + self.WIDTH:
                     side = DIR.up
-                elif math.radians(-180) <= a and a <= math.radians(-135):
+                elif math.radians(-180) <= angle and angle <= math.radians(-135):
                     side = DIR.left
                 else:
                     side = DIR.up
