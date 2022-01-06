@@ -28,6 +28,9 @@ tallness = corner[1] - center[1]
 vector = [abs(p - c) / measure for (p, c, measure) in zip(corner, center, (width, tallness))]
 vector_magnitude = math.sqrt(sum([pow(sub, 2) for sub in vector]))
 vector_magnitude_one = tuple([sub / vector_magnitude for sub in vector])
+print(f'{vector_magnitude_one = }')
+
+print(list(DIR))
 
 print(vector)
 print(vector_magnitude_one)

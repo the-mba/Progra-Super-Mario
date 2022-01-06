@@ -59,9 +59,14 @@ class DIR(Enum):
         return math.atan2(self[1], self[0])     
     
     def get_DIR_with_similar_coords(coords):
+        skip = 1 # skip the first value
         for dir in DIR:
-            if all([abs(dir[i] - coords[i]) < 10 ^(-6) for i in range(len(dir))]):
-                return dir
+            if skip:
+                skip -= 1
+            else:
+                print(f'{dir = }')
+                if all([abs(dir.value[i] - coords[i]) < 10 ^(-6) for i in range(len(dir.value))]):
+                    return dir
 
     r = math.sqrt(2) / 2
     up = (0, -1)
