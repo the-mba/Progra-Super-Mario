@@ -64,8 +64,17 @@ class DIR(Enum):
             if skip:
                 skip -= 1
             else:
-                print(f'{dir = }')
-                if all([abs(dir.value[i] - coords[i]) < 10 ^(-6) for i in range(len(dir.value))]):
+                """print(f'{dir = }')
+                print(coords)
+                for i in range(2):
+                    print(f'{dir.value[i] = }')
+                    print(f'{coords[i]    = }')
+                    resta = abs(dir.value[i] - coords[i])
+                    print(f'{resta        = }')
+                    print(10^(-6))
+                print("array of trues: ", [abs(dir.value[i] - coords[i]) < 10 ** (-6) for i in range(len(dir.value))])
+                print("All: ", ) """
+                if all([abs(dir.value[i] - coords[i]) < 10 ** (-6) for i in range(len(dir.value))]):
                     return dir
 
     r = math.sqrt(2) / 2

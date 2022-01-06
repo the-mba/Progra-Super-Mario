@@ -55,6 +55,10 @@ class Entity:
         else:
             self.vel_y = 0
         self.y += self.vel_y
+
+        # Collision with Mario
+        if self.collides(self.game.mario):
+            print(33333333333)
     
     def draw(self) -> None:
         pyxel.blt(
@@ -86,8 +90,23 @@ class Entity:
         vector_magnitude = math.sqrt(sum([sub^2 for sub in vector]))
         vector_magnitude_one = [sub / vector_magnitude for sub in vector]
         """
-        vector = [abs(p - c) * 2 / measure for (p, c, measure) in (corner, self.center(), (self.WIDTH, self.TALLNESS))]
-        return DIR.get_DIR_with_similar_coords(vecctor)
+
+        corner = (0, 0)
+        center = (1, 1)
+        width = corner[0] - center[0]
+        tallness = corner[1] - center[1]
+
+        """ vector = [abs(p - c) / measure for (p, c, measure) in zip(corner, self.center(), (self.WIDTH, self.TALLNESS))]
+        vector_magnitude = math.sqrt(sum([pow(sub, 2) for sub in vector]))
+        vector_magnitude_one = tuple([sub / vector_magnitude for sub in vector])
+
+        print(f'{DIR.get_DIR_with_similar_coords(vector_magnitude_one) = }') """
+
+
+        vector = [abs(p - c) * 2 / measure for (p, c, measure) in zip(corner, self.center(), (self.WIDTH, self.TALLNESS))]
+        vector_magnitude = math.sqrt(sum([pow(sub, 2) for sub in vector]))
+        vector_magnitude_one = tuple([sub / vector_magnitude for sub in vector])
+        return DIR.get_DIR_with_similar_coords(vector_magnitude_one)
 
     def rect_func(self, x) -> float:
         p = (self.y - self._y_prev) / (self.x - self._x_prev)
@@ -100,8 +119,8 @@ class Entity:
     def collides(self, other) -> tuple[DIR]:
         collision_corner = [DIR.none]
         
-        x_interval = Entity.Interval(other.x, other.x + other.WIDTH)
-        y_interval = Entity.Interval(other.y, other.y + other.TALLNESS)
+        x_interval = Entity.Interval(other.x, other.WIDTH)
+        y_interval = Entity.Interval(other.y, other.TALLNESS)
         for corner in self.corners():
             if x_interval.contains(corner[0]) and y_interval.contains(corner[1]):
                 try:
@@ -109,6 +128,7 @@ class Entity:
                 except:
                     pass
                 collision_corner.append(self.get_DIR_towards_corner(corner))
+        print(collision_corner)
         return collision_corner
     
     
@@ -140,7 +160,7 @@ class Entity:
         return col, corner
     
     class Interval:
-        def __init__(self, left: float, closed_left: bool, right: float, closed_right: bool, is_b_relative_not_absolute: bool) -> None:
+        def __init__(self, left: float, right: float, closed_left: bool = True, closed_right: bool = True, is_b_relative_not_absolute: bool = True) -> None:
             self.left = left
             self.closed_left = closed_left
             self.right = left + right if is_b_relative_not_absolute else right
